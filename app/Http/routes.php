@@ -11,6 +11,13 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
-
 Route::auth();
+
+Route::group(['middleware' => 'web'], function () {
+    Route::get('/', 'HomeController@index');
+
+    Route::group(['prefix' => 'link'], function () {
+        Route::get('/', 'LinkController@index');
+        Route::post('/new', 'LinkController@saveLink');
+    });
+});
