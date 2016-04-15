@@ -14,9 +14,7 @@ use Illuminate\Foundation\Auth\User;
 class Link extends AbstractModel
 {
 
-    public $fillable = [
-        'user_id', 'url'
-    ];
+    public $guarded = ['id'];
 
     public function user()
     {
