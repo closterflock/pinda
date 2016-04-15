@@ -35,4 +35,20 @@ class LinkRepository extends ModelRepository
             ->get();
     }
 
+    /**
+     * Retrieves a link for a user.
+     *
+     * @param $id
+     * @param User $user
+     * @return \Illuminate\Database\Eloquent\Model|null|static
+     */
+    public function getLinkForUser($id, User $user)
+    {
+        return $this
+            ->query()
+            ->where('user_id', '=', $user->id)
+            ->where('id', '=', $id)
+            ->first();
+    }
+
 }

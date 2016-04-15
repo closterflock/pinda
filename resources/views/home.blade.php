@@ -11,6 +11,8 @@
                     @foreach($links as $link)
                         <div class="link-container">
                             <h3><a href="{{$link->url}}">{{ $link->title !== null ? $link->title : $link->url }}</a></h3>
+                            <a href="/link/{{$link->id}}">Edit</a>
+                            <a href="/link/{{$link->id}}/delete">Delete</a>
                             @if($link->description !== null)
                                 <p>{{$link->description}}</p>
                             @endif
