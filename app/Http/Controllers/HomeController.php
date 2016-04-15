@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests;
+use App\Models\Repository\LinkRepository;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -20,10 +21,14 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
+     * @param Request $request
+     * @param LinkRepository $repository
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, LinkRepository $repository)
     {
-        return view('home');
+        return view('home', [
+            'links' => $repository->getLinksForUser($request->user())
+        ]);
     }
 }

@@ -8,7 +8,14 @@
                 <div class="panel-heading">Dashboard</div>
 
                 <div class="panel-body">
-                    You are logged in!
+                    @foreach($links as $link)
+                        <div class="link-container">
+                            <h3><a href="{{$link->url}}">{{ $link->title !== null ? $link->title : $link->url }}</a></h3>
+                            @if($link->description !== null)
+                                <p>{{$link->description}}</p>
+                            @endif
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
