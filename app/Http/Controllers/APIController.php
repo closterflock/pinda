@@ -26,4 +26,17 @@ abstract class APIController extends Controller
         return $this->responseFactory->make('error', 'Missing parameters.', $errors, 400);
     }
 
+    /**
+     * Creates a success response.
+     *
+     * @param string $message
+     * @param array $data
+     * @param array $headers
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function successResponse($message = 'Success', $data = [], $headers = [])
+    {
+        return $this->responseFactory->make('success', $message, $data, 200, $headers);
+    }
+
 }
