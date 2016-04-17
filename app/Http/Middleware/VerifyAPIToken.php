@@ -58,7 +58,7 @@ class VerifyAPIToken
         $apiToken = $request->headers->get('auth_token');
 
         if (is_null($apiToken)) {
-            return $this->createUnauthorizedResponse('missing_auth', 'Missing either auth id or auth token');
+            return $this->createUnauthorizedResponse('missing_auth', 'Missing auth token.');
         }
 
         /** @var AuthToken $authToken */
@@ -66,6 +66,7 @@ class VerifyAPIToken
             ->repository
             ->with('user')
             ->where('token', '=', $apiToken)
+            ->where('ip', '=', $request->ip())
             ->first();
 
         if (!isset($authToken)) {
