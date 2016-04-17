@@ -11,6 +11,8 @@
 |
 */
 
+use App\Http\Middleware\VerifyAPIToken;
+
 Route::auth();
 
 Route::group(['middleware' => 'web'], function () {
@@ -25,4 +27,12 @@ Route::group(['middleware' => 'web'], function () {
             Route::get('/delete', 'LinkController@deleteLink');
         });
     });
+
+    Route::group(['prefix' => '/api/v1', 'middleware' => VerifyAPIToken::class], function () {
+        Route::any('/', function () {
+            dd(Auth::user());
+        });
+    });
+
+    Route::post('/token', 'Auth\TokenController@newToken');
 });
