@@ -56,9 +56,8 @@ class VerifyAPIToken
     public function handle($request, Closure $next)
     {
         $apiToken = $request->headers->get('auth_token');
-        $authId = $request->headers->get('auth_id');
 
-        if (is_null($apiToken) || is_null($authId)) {
+        if (is_null($apiToken)) {
             return $this->createUnauthorizedResponse('missing_auth', 'Missing either auth id or auth token');
         }
 
@@ -67,7 +66,6 @@ class VerifyAPIToken
             ->repository
             ->with('user')
             ->where('token', '=', $apiToken)
-            ->where('id', '=', $authId)
             ->first();
 
         if (!isset($authToken)) {
