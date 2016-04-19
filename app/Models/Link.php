@@ -11,6 +11,9 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User;
 
+/**
+ * @property mixed id
+ */
 class Link extends AbstractModel
 {
 
