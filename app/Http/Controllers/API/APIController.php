@@ -32,12 +32,13 @@ abstract class APIController extends Controller
      *
      * @param string $message
      * @param array $data
+     * @param int $httpStatus
      * @param array $headers
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function successResponse($message = 'Success', $data = [], $headers = [])
+    public function successResponse($message = 'Success', $data = [], $httpStatus = 200, $headers = [])
     {
-        return $this->responseFactory->make('success', $message, $data, 200, $headers);
+        return $this->responseFactory->make('success', $message, $data, $httpStatus, $headers);
     }
 
 }
