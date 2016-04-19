@@ -79,9 +79,9 @@ class LinkController extends Controller
 
         $service->saveLink(
             $request->user(),
+            $request->url,
             $request->title,
-            $request->description,
-            $request->url
+            $request->description
         );
 
         return redirect('/');

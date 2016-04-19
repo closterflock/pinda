@@ -35,7 +35,7 @@ class LinkService
      * @param $url
      * @return \App\Models\AbstractModel|\App\Models\Link|null
      */
-    public function saveLink(User $user, $title, $description, $url)
+    public function saveLink(User $user, $url, $title = null, $description = null)
     {
         $link = $this->repository->getLinkForUserByUrl($url, $user);
 
