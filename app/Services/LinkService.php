@@ -33,7 +33,7 @@ class LinkService
      * @param $title
      * @param $description
      * @param $url
-     * @return \App\Models\AbstractModel|\App\Models\Link|null
+     * @return \App\Models\Link
      */
     public function saveLink(User $user, $url, $title = null, $description = null)
     {
