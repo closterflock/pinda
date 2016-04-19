@@ -9,9 +9,9 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Factory\ModelFactory;
 use App\Models\Link;
 use App\Models\Repository\LinkRepository;
+use App\Services\LinkService;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller
@@ -71,22 +71,18 @@ class LinkController extends Controller
         return redirect('/');
     }
 
-    public function newLink(Request $request, ModelFactory $factory)
+    public function newLink(Request $request, LinkService $service)
     {
         $this->validate($request, [
             'url' => ['required', 'url']
         ]);
 
-        $user = $request->user();
-        $factory->setRepository($this->repository);
-
-        $factory->make([
-            'title' => $request->title,
-            'description' => $request->description,
-            'url' => $request->url
-        ], [
-            'user' => $user
-        ]);
+        $service->saveLink(
+            $request->user(),
+            $request->title,
+            $request->description,
+            $request->url
+        );
 
         return redirect('/');
     }
