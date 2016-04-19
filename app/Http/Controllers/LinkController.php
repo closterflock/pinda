@@ -26,11 +26,24 @@ class LinkController extends Controller
         $this->repository = $repository;
     }
 
+    /**
+     * The index.
+     *
+     * @method GET
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         return view('links');
     }
 
+    /**
+     * The edit index.
+     *
+     * @method GET
+     * @param Link $link
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function editIndex(Link $link)
     {
         return view('edit-links', [
@@ -38,6 +51,14 @@ class LinkController extends Controller
         ]);
     }
 
+    /**
+     * Updates a link.
+     *
+     * @method POST
+     * @param Link $link
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function updateLink(Link $link, Request $request)
     {
         $this->validate($request, [
@@ -59,6 +80,15 @@ class LinkController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Deletes a link.
+     *
+     * @method GET
+     * @param Link $link
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
+     */
     public function deleteLink(Link $link, Request $request)
     {
         $link->load('user');
@@ -71,6 +101,14 @@ class LinkController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Creates a new link, or saves an already existing one.
+     *
+     * @method POST
+     * @param Request $request
+     * @param LinkService $service
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function newLink(Request $request, LinkService $service)
     {
         $this->validate($request, [

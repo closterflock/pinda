@@ -27,7 +27,7 @@ class LinkService
     }
 
     /**
-     * Creates the first
+     * Creates or updates a link.
      *
      * @param User $user
      * @param $title

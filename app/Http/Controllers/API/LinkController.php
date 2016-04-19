@@ -4,7 +4,6 @@
 namespace App\Http\Controllers\API;
 
 
-use App\Models\Link;
 use App\Models\Repository\LinkRepository;
 use App\Services\LinkService;
 use Illuminate\Http\Request;
@@ -12,6 +11,14 @@ use Illuminate\Http\Request;
 class LinkController extends APIController
 {
 
+    /**
+     * Retrieves a list of links.
+     *
+     * @method GET
+     * @param Request $request
+     * @param LinkRepository $repository
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
     public function getLinks(Request $request, LinkRepository $repository)
     {
         return $this->successResponse('Success', [
@@ -19,6 +26,14 @@ class LinkController extends APIController
         ]);
     }
 
+    /**
+     * Saves a link.
+     *
+     * @method PUT
+     * @param Request $request
+     * @param LinkService $service
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
     public function saveLink(Request $request, LinkService $service)
     {
         $this->validate($request, [
