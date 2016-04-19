@@ -41,4 +41,18 @@ abstract class APIController extends Controller
         return $this->responseFactory->make('success', $message, $data, $httpStatus, $headers);
     }
 
+    /**
+     * Creates an error response.
+     *
+     * @param string $message
+     * @param array $data
+     * @param int $httpStatus
+     * @param array $headers
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function errorResponse($message = 'Error', $data = [], $httpStatus = 400, $headers = [])
+    {
+        return $this->responseFactory->make('error', $message, $data, $httpStatus, $headers);
+    }
+
 }

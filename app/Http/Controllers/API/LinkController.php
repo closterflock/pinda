@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\API;
 
 
+use App\Models\Link;
 use App\Models\Repository\LinkRepository;
 use App\Services\LinkService;
 use Illuminate\Http\Request;
@@ -24,6 +25,25 @@ class LinkController extends APIController
         return $this->successResponse('Success', [
             'links' => $repository->getLinksForUser($request->user())
         ]);
+    }
+
+    /**
+     * Deletes a link.
+     *
+     * @method DELETE
+     * @param Link $link
+     * @param Request $request
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function deleteLink(Link $link, Request $request)
+    {
+        if ($link->user_id !== $request->user()->id) {
+            return $this->errorResponse('Link does not belong to user.', [], 409);
+        }
+
+        $link->delete();
+        return $this->successResponse();
     }
 
     /**
