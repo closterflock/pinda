@@ -4,7 +4,7 @@
 namespace App\Http\Controllers\Auth;
 
 
-use App\Http\Controllers\APIController;
+use App\Http\Controllers\API\APIController;
 use App\Http\Middleware\GenerateTokenAuth;
 use App\Http\Response\APIResponseFactory;
 use App\Models\Factory\AuthTokenFactory;
