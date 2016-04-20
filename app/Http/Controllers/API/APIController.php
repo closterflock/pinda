@@ -55,4 +55,39 @@ abstract class APIController extends Controller
         return $this->responseFactory->make('error', $message, $data, $httpStatus, $headers);
     }
 
+    /**
+     * Creates a does not belong to user error.
+     *
+     * @param string $message
+     * @param array $data
+     * @param int $httpStatus
+     * @param array $headers
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function belongsToOtherError($message = 'This resource does not belong to the user.', $data = [], $httpStatus = 403, $headers = [])
+    {
+        return $this->errorResponse($message, $data, $httpStatus, $headers);
+    }
+
+    /**
+     * Creates a resource exists error.
+     *
+     * @param string $message
+     * @param array $data
+     * @param int $httpStatus
+     * @param array $headers
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     */
+    public function resourceExistsError($message = 'Resource already exists.', $data = [], $httpStatus = 409, $headers = [])
+    {
+        return $this->errorResponse($message, $data, $httpStatus, $headers);
+    }
+
+    public function idBackSuccess($id)
+    {
+        return $this->successResponse('Success', [
+            'id' => $id
+        ]);
+    }
+
 }
