@@ -89,10 +89,6 @@ class LinkController extends APIController
      */
     public function updateLink(Request $request, Link $link)
     {
-        $this->validate($request, [
-            'url' => 'required'
-        ]);
-
         if ($link->user_id !== $request->user()->id) {
             return $this->belongsToOtherError();
         }
@@ -125,6 +121,8 @@ class LinkController extends APIController
         if (isset($link)) {
             return $this->resourceExistsError();
         }
+
+        $factory->setRepository($this->repository);
 
         /** @var Link $link */
         $link = $factory->make([
