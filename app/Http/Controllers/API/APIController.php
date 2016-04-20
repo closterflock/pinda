@@ -22,6 +22,18 @@ abstract class APIController extends Controller
     /**
      * {@inheritdoc}
      */
+    public function callAction($method, $parameters)
+    {
+       try {
+           return parent::callAction($method, $parameters);
+       } catch (\Exception $e) {
+            throw new APIException($e->getMessage(), $e->getCode(), $e);
+       }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function buildFailedValidationResponse(Request $request, array $errors)
     {
         return $this->responseFactory->make('error', 'Missing parameters.', $errors, 400);
