@@ -31,10 +31,10 @@ Route::group(['middleware' => 'web'], function () {
     Route::group(['prefix' => '/api/v1', 'middleware' => VerifyAPIToken::class], function () {
         Route::group(['prefix' => 'links'], function () {
             Route::get('/', 'API\LinkController@getLinks');
+            Route::put('/new', 'API\LinkController@newLink');
             Route::get('/{link}', 'API\LinkController@getLink');
             Route::delete('/{link}', 'API\LinkController@deleteLink');
             Route::put('/{link}', 'API\LinkController@updateLink');
-            Route::put('/new', 'API\LinkController@newLink');
         });
     });
 
