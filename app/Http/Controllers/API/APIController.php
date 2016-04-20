@@ -102,4 +102,9 @@ abstract class APIController extends Controller
         ]);
     }
 
+    public function resourceNotFoundError()
+    {
+        return $this->errorResponse('Resource not found', [], 404);
+    }
+
 }
