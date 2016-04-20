@@ -40,7 +40,7 @@ class LinkRepository extends ModelRepository
      *
      * @param $id
      * @param User $user
-     * @return \Illuminate\Database\Eloquent\Model|null|static
+     * @return Link|null
      */
     public function getLinkForUser($id, User $user)
     {
@@ -48,6 +48,20 @@ class LinkRepository extends ModelRepository
             ->query()
             ->where('user_id', '=', $user->id)
             ->where('id', '=', $id)
+            ->first();
+    }
+
+    /**
+     * @param User $user
+     * @param $url
+     * @return Link|null
+     */
+    public function getLinkForUserByUrl(User $user, $url)
+    {
+        return $this
+            ->query()
+            ->where('user_id', '=', $user->id)
+            ->where('url', '=',$url)
             ->first();
     }
 

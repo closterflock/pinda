@@ -26,11 +26,26 @@ class LinkController extends Controller
         $this->repository = $repository;
     }
 
+    /**
+     * The index.
+     *
+     * @route /
+     * @method GET
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         return view('links');
     }
 
+    /**
+     * The edit index.
+     *
+     * @route /link/{link}
+     * @method GET
+     * @param Link $link
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function editIndex(Link $link)
     {
         return view('edit-links', [
@@ -38,6 +53,15 @@ class LinkController extends Controller
         ]);
     }
 
+    /**
+     * Updates a link.
+     *
+     * @route /link/{link}/save
+     * @method POST
+     * @param Link $link
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function updateLink(Link $link, Request $request)
     {
         $this->validate($request, [
@@ -59,6 +83,16 @@ class LinkController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Deletes a link.
+     *
+     * @route /link/{link}/delete
+     * @method GET
+     * @param Link $link
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \Exception
+     */
     public function deleteLink(Link $link, Request $request)
     {
         $link->load('user');
@@ -71,21 +105,34 @@ class LinkController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Creates a new link.
+     *
+     * @route /link/new
+     * @method POST
+     * @param Request $request
+     * @param ModelFactory $factory
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function newLink(Request $request, ModelFactory $factory)
     {
         $this->validate($request, [
             'url' => ['required', 'url']
         ]);
 
-        $user = $request->user();
         $factory->setRepository($this->repository);
 
+        $link = $this->repository->getLinkForUserByUrl($request->user(), $request->url);
+        if (isset($link)) {
+            return redirect('/');
+        }
+
         $factory->make([
+            'url' => $request->url,
             'title' => $request->title,
-            'description' => $request->description,
-            'url' => $request->url
+            'description' => $request->description
         ], [
-            'user' => $user
+            'user' => $request->user()
         ]);
 
         return redirect('/');

@@ -2,15 +2,29 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\API\APIException;
+use App\Http\Response\APIResponseFactory;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+    /**
+     * @var APIResponseFactory
+     */
+    private $factory;
+
+    public function __construct(LoggerInterface $log, APIResponseFactory $factory)
+    {
+        $this->factory = $factory;
+        parent::__construct($log);
+    }
+
     /**
      * A list of the exception types that should not be reported.
      *
@@ -45,6 +59,20 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        if ($e instanceof APIException || $request->is('api/*', 'token')) {
+            $data = [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'trace' => $e->getTrace()
+            ];
+            return $this->factory->make(
+                'error',
+                'Uncaught Exception: ' . $e->getMessage(),
+                $data,
+                400
+            );
+        }
+
         return parent::render($request, $e);
     }
 }
