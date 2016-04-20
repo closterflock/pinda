@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\User;
 
 /**
  * @property mixed id
+ * @property mixed user_id
  */
 class Link extends AbstractModel
 {
