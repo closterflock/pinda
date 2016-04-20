@@ -55,7 +55,7 @@ class VerifyAPIToken
      */
     public function handle($request, Closure $next)
     {
-        $apiToken = $request->headers->get('auth_token');
+        $apiToken = $request->headers->get('X-Auth-Token');
 
         if (is_null($apiToken)) {
             return $this->createUnauthorizedResponse('missing_auth', 'Missing auth token.');
