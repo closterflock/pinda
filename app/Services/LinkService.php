@@ -18,6 +18,15 @@ class LinkService
         $this->repository = $repository;
     }
 
+    /**
+     * Saves a link.
+     *
+     * @param Link $link
+     * @param $url
+     * @param null $title
+     * @param null $description
+     * @return Link
+     */
     public function saveLink(Link $link, $url, $title = null, $description = null)
     {
         $link->fill([
@@ -31,11 +40,21 @@ class LinkService
         return $link;
     }
 
+    /**
+     * Creates a new link.
+     *
+     * @param ModelFactory $factory
+     * @param User $user
+     * @param $url
+     * @param null $title
+     * @param null $description
+     * @return Link
+     */
     public function newLink(ModelFactory $factory, User $user, $url, $title = null, $description = null)
     {
         $factory->setRepository($this->repository);
 
-        $factory->make([
+        return $factory->make([
             'url' => $url,
             'title' => $title,
             'description' => $description
