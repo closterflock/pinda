@@ -117,7 +117,7 @@ class LinkController extends Controller
     {
         $this->validator->validate($this, $request);
 
-        if (!$this->validator->linkAlreadyExists(new LinkRepository(), $request->user(), $request->url)) {
+        if ($this->validator->linkAlreadyExists(new LinkRepository(), $request->user(), $request->url)) {
             return redirect('/');
         }
 
