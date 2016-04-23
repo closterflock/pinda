@@ -8,6 +8,8 @@ use App\Http\Response\APIResponseFactory;
 use App\Models\Factory\ModelFactory;
 use App\Models\Link;
 use App\Models\Repository\LinkRepository;
+use App\Services\LinkService;
+use App\Services\Validator\LinkValidator;
 use Illuminate\Http\Request;
 
 class LinkController extends APIController
@@ -16,11 +18,16 @@ class LinkController extends APIController
      * @var LinkRepository
      */
     private $repository;
+    /**
+     * @var LinkValidator
+     */
+    private $validator;
 
-    public function __construct(APIResponseFactory $responseFactory, LinkRepository $repository)
+    public function __construct(APIResponseFactory $responseFactory, LinkRepository $repository, LinkValidator $validator)
     {
         parent::__construct($responseFactory);
         $this->repository = $repository;
+        $this->validator = $validator;
     }
 
     /**
@@ -49,7 +56,7 @@ class LinkController extends APIController
      */
     public function getLink(Request $request, Link $link)
     {
-        if ($link->user_id !== $request->user()->id) {
+        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
             return $this->belongsToOtherError();
         }
 
@@ -70,7 +77,7 @@ class LinkController extends APIController
      */
     public function deleteLink(Link $link, Request $request)
     {
-        if ($link->user_id !== $request->user()->id) {
+        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
             return $this->belongsToOtherError();
         }
 
@@ -89,7 +96,7 @@ class LinkController extends APIController
      */
     public function updateLink(Request $request, Link $link)
     {
-        if ($link->user_id !== $request->user()->id) {
+        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
             return $this->belongsToOtherError();
         }
 
@@ -108,30 +115,24 @@ class LinkController extends APIController
      * @route /api/v1/links/new
      * @method PUT
      * @param Request $request
-     * @param ModelFactory $factory
+     * @param LinkService $service
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function newLink(Request $request, ModelFactory $factory)
+    public function newLink(Request $request, LinkService $service)
     {
-        $this->validate($request, [
-            'url' => 'required'
-        ]);
+        $this->validator->validate($this, $request);
 
-        $link = $this->repository->getLinkForUserByUrl($request->user(), $request->url);
-        if (isset($link)) {
+        if ($this->validator->linkAlreadyExists($this->repository, $request->user(), $request->url)) {
             return $this->resourceExistsError();
         }
 
-        $factory->setRepository($this->repository);
-
-        /** @var Link $link */
-        $link = $factory->make([
-            'url' => $request->url,
-            'title' => $request->title,
-            'description' => $request->description
-        ], [
-            'user' => $request->user()
-        ]);
+        $link = $service->newLink(
+            new ModelFactory(),
+            $request->user(),
+            $request->url,
+            $request->title,
+            $request->description
+        );
 
         return $this->idBackSuccess($link->id);
     }
