@@ -32,7 +32,7 @@ class LinkValidator extends ValidatorService
      */
     public function linkBelongsToUser(User $user, Link $link)
     {
-        return ($link->user_id !== $user->id);
+        return ($link->user_id === $user->id);
     }
 
     public function linkAlreadyExists(LinkRepository $repository, User $user, $url)
