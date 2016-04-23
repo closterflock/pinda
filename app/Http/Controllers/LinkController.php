@@ -12,6 +12,8 @@ namespace App\Http\Controllers;
 use App\Models\Factory\ModelFactory;
 use App\Models\Link;
 use App\Models\Repository\LinkRepository;
+use App\Services\LinkService;
+use App\Services\Validator\LinkValidator;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller
@@ -20,9 +22,14 @@ class LinkController extends Controller
      * @var LinkRepository
      */
     private $repository;
+    /**
+     * @var LinkValidator
+     */
+    private $validator;
 
-    public function __construct(LinkRepository $repository)
+    public function __construct(LinkRepository $repository, LinkValidator $validator)
     {
+        $this->validator = $validator;
         $this->repository = $repository;
     }
 
@@ -60,26 +67,19 @@ class LinkController extends Controller
      * @method POST
      * @param Link $link
      * @param Request $request
+     * @param LinkService $service
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function updateLink(Link $link, Request $request)
+    public function updateLink(Link $link, Request $request, LinkService $service)
     {
-        $this->validate($request, [
-            'url' => ['required', 'url']
-        ]);
+        $this->validator->validate($this, $request);
 
-        $link->load('user');
-        if ($link->user->id !== $request->user()->id) {
+        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
             return redirect('/');
         }
 
-        $link->fill([
-            'url' => $request->url,
-            'title' => $request->title,
-            'description' => $request->description
-        ]);
+        $service->saveLink($link, $request->url, $request->title, $request->description);
 
-        $link->save();
         return redirect('/');
     }
 
@@ -95,8 +95,7 @@ class LinkController extends Controller
      */
     public function deleteLink(Link $link, Request $request)
     {
-        $link->load('user');
-        if ($link->user->id !== $request->user()->id) {
+        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
             return redirect('/');
         }
 
@@ -111,29 +110,24 @@ class LinkController extends Controller
      * @route /link/new
      * @method POST
      * @param Request $request
-     * @param ModelFactory $factory
+     * @param LinkService $service
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function newLink(Request $request, ModelFactory $factory)
+    public function newLink(Request $request, LinkService $service)
     {
-        $this->validate($request, [
-            'url' => ['required', 'url']
-        ]);
+        $this->validator->validate($this, $request);
 
-        $factory->setRepository($this->repository);
-
-        $link = $this->repository->getLinkForUserByUrl($request->user(), $request->url);
-        if (isset($link)) {
+        if (!$this->validator->linkAlreadyExists(new LinkRepository(), $request->user(), $request->url)) {
             return redirect('/');
         }
 
-        $factory->make([
-            'url' => $request->url,
-            'title' => $request->title,
-            'description' => $request->description
-        ], [
-            'user' => $request->user()
-        ]);
+        $service->newLink(
+            new ModelFactory(),
+            $request->user(),
+            $request->url,
+            $request->title,
+            $request->description
+        );
 
         return redirect('/');
     }
