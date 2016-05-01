@@ -45,6 +45,13 @@ class LinkController extends APIController
         ]);
     }
 
+    public function getLinksForSearch(Request $request)
+    {
+        return $this->successResponse('Success', [
+            'links' => $this->repository->getLinksForSearch($request->term)
+        ]);
+    }
+
     /**
      * Retrieves a link.
      *
