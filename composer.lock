@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b1cf7ba4b3e52642c33c103b5b189d73",
+    "hash": "f372162f226e3862da9f667108274ed9",
+    "content-hash": "8e13050a31bf6c59c595a93a5826115e",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -246,6 +247,39 @@
                 }
             ],
             "time": "2015-04-20 18:58:01"
+        },
+        {
+            "name": "jamesspence/core-model",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jamesaspence/laravel-core-model.git",
+                "reference": "741780764c72d92a6f2bcad12334269d45929973"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/741780764c72d92a6f2bcad12334269d45929973",
+                "reference": "741780764c72d92a6f2bcad12334269d45929973",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laracore\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "James Spence",
+                    "email": "Jamesaspence20@gmail.com"
+                }
+            ],
+            "description": "A laravel core model layer, with factories and repositories.",
+            "time": "2016-05-17 15:09:20"
         },
         {
             "name": "jeremeamia/SuperClosure",

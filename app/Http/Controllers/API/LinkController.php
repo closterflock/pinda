@@ -5,12 +5,12 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Response\APIResponseFactory;
-use App\Models\Factory\ModelFactory;
 use App\Models\Link;
 use App\Models\Repository\LinkRepository;
 use App\Services\LinkService;
 use App\Services\Validator\LinkValidator;
 use Illuminate\Http\Request;
+use Laracore\Factory\ModelFactory;
 
 class LinkController extends APIController
 {
