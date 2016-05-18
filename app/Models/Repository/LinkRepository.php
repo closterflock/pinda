@@ -12,6 +12,7 @@ namespace App\Models\Repository;
 use App\Models\Link;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\Builder;
 
 class LinkRepository extends ModelRepository
 {
@@ -63,6 +64,36 @@ class LinkRepository extends ModelRepository
             ->where('user_id', '=', $user->id)
             ->where('url', '=',$url)
             ->first();
+    }
+
+    public function buildTagJoins(Builder $query = null)
+    {
+        if (is_null($query)) {
+            $query = $this->query();
+        }
+
+        return $query
+            ->select('links.*')
+            ->leftJoin('link_tag', 'links.id', '=', 'link_tag.link_id')
+            ->leftJoin('tags', 'link_tag.tag_id', '=', 'tags.id');
+    }
+
+    /**
+     * @param $term
+     * @return mixed
+     */
+    public function getLinksForSearch($term)
+    {
+        $wildcardTerm = '%' . $term . '%';
+        $links = $this
+            ->buildTagJoins()
+            ->with('tags')
+            ->where('links.title', 'LIKE', $wildcardTerm)
+            ->orWhere('links.description', 'LIKE', $wildcardTerm)
+            ->orWhere('tags.name', 'LIKE', $wildcardTerm)
+            ->get();
+
+        return $links;
     }
 
 }

@@ -25,4 +25,9 @@ class Link extends AbstractModel
         return $this->belongsTo(User::class);
     }
 
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
+
 }
