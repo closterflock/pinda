@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 
+use App\Http\Controllers\API\Exception\ExpectedAPIException;
+use App\Http\Controllers\API\Exception\UnexpectedAPIException;
 use App\Http\Controllers\Controller;
 use App\Http\Response\APIResponseFactory;
 use Illuminate\Http\Request;
@@ -26,17 +28,21 @@ abstract class APIController extends Controller
     {
        try {
            return parent::callAction($method, $parameters);
+       } catch (ExpectedAPIException $e) {
+           throw $e;
        } catch (\Exception $e) {
-            throw new APIException($e->getMessage(), $e->getCode(), $e);
+            throw new UnexpectedAPIException($e->getMessage(), $e->getCode(), $e);
        }
     }
 
     /**
-     * {@inheritdoc}
+     * @param Request $request
+     * @param \Illuminate\Validation\Validator $validator
+     * @throws ExpectedAPIException
      */
-    public function buildFailedValidationResponse(Request $request, array $errors)
+    public function throwValidationException(Request $request, $validator)
     {
-        return $this->responseFactory->make('error', 'Missing parameters.', $errors, 400);
+        throw new ExpectedAPIException($validator->errors()->toArray());
     }
 
     /**

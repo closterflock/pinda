@@ -2,7 +2,8 @@
 
 namespace App\Exceptions;
 
-use App\Http\Controllers\API\APIException;
+use App\Http\Controllers\API\Exception\ExpectedAPIException;
+use App\Http\Controllers\API\Exception\UnexpectedAPIException;
 use App\Http\Response\APIResponseFactory;
 use Exception;
 use Illuminate\Validation\ValidationException;
@@ -59,7 +60,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof APIException || $request->is('api/*', 'token')) {
+        if ($e instanceof ExpectedAPIException) {
+            return $this->factory->make(
+                'error',
+                'Missing parameters.',
+                $e->getErrors(),
+                422
+            );
+        }
+        if ($e instanceof UnexpectedAPIException || $request->is('api/*', 'token')) {
             $data = [
                 'message' => $e->getMessage(),
                 'code' => $e->getCode(),
