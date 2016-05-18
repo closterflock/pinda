@@ -47,7 +47,7 @@ class AuthTokenFactory extends ModelFactory
     {
         do {
             $token = str_random(32);
-        } while ($this->getRepository()->whereFirst('token', '=', $token) instanceof AuthToken);
+        } while ($this->getRepository()->query()->where('token', '=', $token)->first() instanceof AuthToken);
 
         return $token;
     }
