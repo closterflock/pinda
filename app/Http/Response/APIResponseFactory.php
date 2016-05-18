@@ -4,6 +4,8 @@
 namespace App\Http\Response;
 
 
+use Illuminate\Http\Response;
+
 class APIResponseFactory
 {
 
@@ -15,7 +17,7 @@ class APIResponseFactory
      * @param array $data
      * @param int $httpStatus
      * @param array $headers
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function make($status = 'success', $message = 'Success', $data = [], $httpStatus = 200, $headers = [])
     {
