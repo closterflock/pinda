@@ -9,7 +9,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Factory\ModelFactory;
+use Laracore\Factory\ModelFactory;
 use App\Models\Link;
 use App\Models\Repository\LinkRepository;
 use App\Services\LinkService;
