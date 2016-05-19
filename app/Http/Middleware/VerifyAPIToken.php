@@ -6,9 +6,9 @@ namespace App\Http\Middleware;
 
 use App\Http\Response\APIResponseFactory;
 use App\Models\AuthToken;
-use App\Models\Repository\ModelRepository;
 use Closure;
 use Illuminate\Auth\AuthManager;
+use Laracore\Repository\ModelRepository;
 
 class VerifyAPIToken
 {

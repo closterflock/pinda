@@ -7,10 +7,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\API\APIController;
 use App\Http\Middleware\GenerateTokenAuth;
 use App\Http\Response\APIResponseFactory;
-use App\Models\Factory\AuthTokenFactory;
+use App\Services\UserAndTokenRegistrar;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Auth\RequestGuard;
-use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
 class TokenController extends APIController
@@ -26,12 +24,12 @@ class TokenController extends APIController
      * Generates a new access token, and returns it.
      *
      * @param Request $request
-     * @param AuthTokenFactory $factory
+     * @param UserAndTokenRegistrar $registrar
      * @return \App\Models\AbstractModel
      */
-    public function newToken(Request $request, AuthTokenFactory $factory)
+    public function newToken(Request $request, UserAndTokenRegistrar $registrar)
     {
-        $authToken = $factory->makeNewToken($request->user(), $request->ip(), $request->headers->get('user-agent'));
+        $authToken = $registrar->createAuthTokenFromRequest($request, $request->user());
 
         return $this->successResponse('Success', [
             'token' => $authToken->token

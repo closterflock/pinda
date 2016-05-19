@@ -28,14 +28,17 @@ Route::group(['middleware' => 'web'], function () {
         });
     });
 
-    Route::group(['prefix' => '/api/v1', 'middleware' => VerifyAPIToken::class], function () {
-        Route::group(['prefix' => 'links'], function () {
-            Route::get('/', 'API\LinkController@getLinks');
-            Route::get('/search', 'API\LinkController@getLinksForSearch');
-            Route::put('/new', 'API\LinkController@newLink');
-            Route::get('/{link}', 'API\LinkController@getLink');
-            Route::delete('/{link}', 'API\LinkController@deleteLink');
-            Route::put('/{link}', 'API\LinkController@updateLink');
+    Route::group(['prefix' => '/api/v1'], function () {
+        Route::post('/register', 'API\RegistrationController@registerUser');
+        Route::group(['middleware' => VerifyAPIToken::class], function () {
+            Route::group(['prefix' => 'links'], function () {
+                Route::get('/', 'API\LinkController@getLinks');
+                Route::get('/search', 'API\LinkController@getLinksForSearch');
+                Route::post('/new', 'API\LinkController@newLink');
+                Route::get('/{link}', 'API\LinkController@getLink');
+                Route::delete('/{link}', 'API\LinkController@deleteLink');
+                Route::put('/{link}', 'API\LinkController@updateLink');
+            });
         });
     });
 

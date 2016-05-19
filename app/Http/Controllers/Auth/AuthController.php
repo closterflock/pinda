@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Factory\UserFactory;
 use App\Models\User;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -24,6 +25,11 @@ class AuthController extends Controller
     use AuthenticatesAndRegistersUsers, ThrottlesLogins;
 
     /**
+     * @var UserFactory
+     */
+    private $factory;
+
+    /**
      * Where to redirect users after login / registration.
      *
      * @var string
@@ -33,9 +39,9 @@ class AuthController extends Controller
     /**
      * Create a new authentication controller instance.
      *
-     * @return void
+     * @param UserFactory $factory
      */
-    public function __construct()
+    public function __construct(UserFactory $factory)
     {
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
     }
@@ -63,10 +69,8 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
+        return $this
+            ->factory
+            ->makeNewUser($data['name'], $data['email'], $data['password']);
     }
 }

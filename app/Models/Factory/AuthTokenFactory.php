@@ -5,15 +5,16 @@ namespace App\Models\Factory;
 
 
 use App\Models\AuthToken;
-use App\Models\Repository\ModelRepository;
 use App\Models\User;
+use Laracore\Factory\ModelFactory;
+use Laracore\Repository\ModelRepository;
 
 class AuthTokenFactory extends ModelFactory
 {
     /**
      * {@inheritdoc}
      */
-    protected function instantiateRepository()
+    public function instantiateRepository()
     {
         return new ModelRepository(AuthToken::class);
     }
@@ -24,7 +25,7 @@ class AuthTokenFactory extends ModelFactory
      * @param User $user
      * @param $ipAddress
      * @param $userAgent
-     * @return \App\Models\AbstractModel
+     * @return AuthToken
      */
     public function makeNewToken(User $user, $ipAddress, $userAgent)
     {
@@ -46,7 +47,7 @@ class AuthTokenFactory extends ModelFactory
     {
         do {
             $token = str_random(32);
-        } while ($this->getRepository()->whereFirst('token', '=', $token) instanceof AuthToken);
+        } while ($this->getRepository()->query()->where('token', '=', $token)->first() instanceof AuthToken);
 
         return $token;
     }
