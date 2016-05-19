@@ -54,6 +54,8 @@ class LinkRepository extends ModelRepository
     }
 
     /**
+     * Retrieves links for a user by URL.
+     *
      * @param User $user
      * @param $url
      * @return Link|null
@@ -67,6 +69,12 @@ class LinkRepository extends ModelRepository
             ->first();
     }
 
+    /**
+     * Builds the join query for tags.
+     *
+     * @param Builder|null $query
+     * @return Builder
+     */
     public function buildTagJoins(Builder $query = null)
     {
         if (is_null($query)) {
@@ -80,8 +88,10 @@ class LinkRepository extends ModelRepository
     }
 
     /**
+     * Retrieves links based on a search.
+     *
      * @param $term
-     * @return mixed
+     * @return Collection
      */
     public function getLinksForSearch($term)
     {

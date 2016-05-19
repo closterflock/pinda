@@ -45,6 +45,14 @@ class LinkController extends APIController
         ]);
     }
 
+    /**
+     * Retrieves a list of links based on search.
+     *
+     * @route /api/v1/links/search
+     * @method GET
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
     public function getLinksForSearch(Request $request)
     {
         return $this->successResponse('Success', [

@@ -16,6 +16,8 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
+     * @route /
+     * @method GET
      * @param Request $request
      * @param LinkRepository $repository
      * @return \Illuminate\Http\Response

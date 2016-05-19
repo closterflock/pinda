@@ -14,6 +14,8 @@ class RegistrationController extends APIController
     /**
      * Registers a user via the API.
      *
+     * @route /api/v1/register
+     * @method POST
      * @param Request $request
      * @param UserAndTokenRegistrar $registrar
      * @return \App\Models\AuthToken|\Illuminate\Http\Response
