@@ -25,7 +25,7 @@ class AuthTokenFactory extends ModelFactory
      * @param User $user
      * @param $ipAddress
      * @param $userAgent
-     * @return \App\Models\AbstractModel
+     * @return AuthToken
      */
     public function makeNewToken(User $user, $ipAddress, $userAgent)
     {

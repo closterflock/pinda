@@ -250,16 +250,16 @@
         },
         {
             "name": "jamesspence/core-model",
-            "version": "1.0.0",
+            "version": "1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jamesaspence/laravel-core-model.git",
-                "reference": "741780764c72d92a6f2bcad12334269d45929973"
+                "reference": "d8672b4c08a3858b5c8ca7cbabcda854e9f60e9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/741780764c72d92a6f2bcad12334269d45929973",
-                "reference": "741780764c72d92a6f2bcad12334269d45929973",
+                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/d8672b4c08a3858b5c8ca7cbabcda854e9f60e9e",
+                "reference": "d8672b4c08a3858b5c8ca7cbabcda854e9f60e9e",
                 "shasum": ""
             },
             "type": "library",
@@ -279,7 +279,7 @@
                 }
             ],
             "description": "A laravel core model layer, with factories and repositories.",
-            "time": "2016-05-17 15:09:20"
+            "time": "2016-05-19 02:36:56"
         },
         {
             "name": "jeremeamia/SuperClosure",
