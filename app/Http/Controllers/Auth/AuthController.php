@@ -44,6 +44,7 @@ class AuthController extends Controller
     public function __construct(UserFactory $factory)
     {
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+        $this->factory = $factory;
     }
 
     /**
