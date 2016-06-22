@@ -29,6 +29,7 @@ Route::group(['middleware' => 'web'], function () {
     });
 
     Route::group(['prefix' => '/api/v1'], function () {
+        Route::post('/login', 'API\RegistrationController@login');
         Route::post('/register', 'API\RegistrationController@registerUser');
         Route::group(['middleware' => VerifyAPIToken::class], function () {
             Route::group(['prefix' => 'links'], function () {
