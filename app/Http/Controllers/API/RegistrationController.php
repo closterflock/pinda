@@ -33,6 +33,16 @@ class RegistrationController extends APIController
         return $registrar->createUserAndAuthTokenFromRequest($request);
     }
 
+    /**
+     * Logs in a user via the API.
+     *
+     * @route /api/v1/login
+     * @method POST
+     * @param Request $request
+     * @param AuthManager $auth
+     * @param AuthTokenFactory $factory
+     * @return \App\Models\AuthToken|\Illuminate\Http\Response
+     */
     public function login(Request $request, AuthManager $auth, AuthTokenFactory $factory)
     {
         if (!$auth->once(['email' => $request->email, 'password' => $request->password])) {
