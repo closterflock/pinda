@@ -49,7 +49,16 @@ class RegistrationController extends APIController
             return $this->errorResponse('Error', ['Email or password is incorrect.']);
         }
 
-        return $factory->makeNewToken($request->user(), $request->ip(), $request->header('User-Agent'));
+        return $this->successResponse(
+            'Success',
+            [
+                'authToken' => $factory->makeNewToken(
+                    $request->user(),
+                    $request->ip(),
+                    $request->header('User-Agent')
+                )
+            ]
+        );
     }
 
 }
