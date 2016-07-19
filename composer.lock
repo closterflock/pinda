@@ -652,17 +652,27 @@
         },
         {
             "name": "jamesspence/core-model",
-            "version": "1.0.6",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jamesaspence/laravel-core-model.git",
-                "reference": "d8672b4c08a3858b5c8ca7cbabcda854e9f60e9e"
+                "reference": "60d436abc5e1ed6cf50ff407b59bd4e2fa9fda66"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/d8672b4c08a3858b5c8ca7cbabcda854e9f60e9e",
-                "reference": "d8672b4c08a3858b5c8ca7cbabcda854e9f60e9e",
+                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/60d436abc5e1ed6cf50ff407b59bd4e2fa9fda66",
+                "reference": "60d436abc5e1ed6cf50ff407b59bd4e2fa9fda66",
                 "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^5.2"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "^5.3"
+            },
+            "suggest": {
+                "illuminate/pagination": "(Required to paginate the result set (5.2.*).)"
             },
             "type": "library",
             "autoload": {
@@ -681,7 +691,7 @@
                 }
             ],
             "description": "A laravel core model layer, with factories and repositories.",
-            "time": "2016-05-19 02:36:56"
+            "time": "2016-05-25 22:04:27"
         },
         {
             "name": "jeremeamia/SuperClosure",

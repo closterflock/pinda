@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 
 use App\Models\Factory\AuthTokenFactory;
+use App\Models\Repository\AuthTokenRepository;
 use App\Services\UserAndTokenRegistrar;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,16 +41,24 @@ class RegistrationController extends APIController
      * @method POST
      * @param Request $request
      * @param AuthManager $auth
-     * @param AuthTokenFactory $factory
+     * @param AuthTokenRepository $repository
      * @return \App\Models\AuthToken|\Illuminate\Http\Response
      */
-    public function login(Request $request, AuthManager $auth, AuthTokenFactory $factory)
+    public function login(Request $request, AuthManager $auth, AuthTokenRepository $repository)
     {
         if (!$auth->once(['email' => $request->email, 'password' => $request->password])) {
             return $this->errorResponse('Error', ['Email or password is incorrect.']);
         }
 
-        return $factory->makeNewToken($request->user(), $request->ip(), $request->header('User-Agent'));
+        return $this->successResponse(
+            'Success',
+            $repository->firstOrCreateForUser(
+                new AuthTokenFactory(),
+                $request->user(),
+                $request->ip(),
+                $request->header('User-Agent')
+            )
+        );
     }
 
 }
