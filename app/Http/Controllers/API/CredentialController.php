@@ -11,7 +11,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 
-class RegistrationController extends APIController
+class CredentialController extends APIController
 {
 
     /**
