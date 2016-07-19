@@ -29,9 +29,12 @@ Route::group(['middleware' => 'web'], function () {
     });
 
     Route::group(['prefix' => '/api/v1'], function () {
-        Route::post('/login', 'API\RegistrationController@login');
-        Route::post('/register', 'API\RegistrationController@registerUser');
+        Route::post('/login', 'API\CredentialController@login');
+        Route::post('/register', 'API\CredentialController@registerUser');
+
         Route::group(['middleware' => VerifyAPIToken::class], function () {
+            Route::delete('/logout', 'API\CredentialController@logout');
+
             Route::group(['prefix' => 'links'], function () {
                 Route::get('/', 'API\LinkController@getLinks');
                 Route::get('/search', 'API\LinkController@getLinksForSearch');

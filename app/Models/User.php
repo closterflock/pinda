@@ -10,6 +10,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     /**
+     * @var AuthToken the current AuthToken being used by the user (if logged in via API)
+     */
+    private $currentAuth;
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -30,5 +35,15 @@ class User extends Authenticatable
     public function links()
     {
         return $this->hasMany(Link::class);
+    }
+
+    public function getAuthToken()
+    {
+        return $this->currentAuth;
+    }
+
+    public function setAuthToken(AuthToken $token)
+    {
+        $this->currentAuth = $token;
     }
 }

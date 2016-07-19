@@ -73,7 +73,10 @@ class VerifyAPIToken
             return $this->createUnauthorizedResponse();
         }
 
-        $this->auth->guard()->setUser($authToken->user);
+        $user = $authToken->user;
+        $user->setAuthToken($authToken);
+
+        $this->auth->guard()->setUser($user);
 
         return $next($request);
     }
