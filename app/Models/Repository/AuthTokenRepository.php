@@ -45,4 +45,15 @@ class AuthTokenRepository extends ModelRepository
         }
     }
 
+    /**
+     * Deletes an auth token.
+     *
+     * @param AuthToken $token
+     * @throws \Exception
+     */
+    public function deleteAuthToken(AuthToken $token)
+    {
+        $this->delete($token);
+    }
+
 }

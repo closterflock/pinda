@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Factory\AuthTokenFactory;
 use App\Models\Repository\AuthTokenRepository;
+use App\Models\User;
 use App\Services\UserAndTokenRegistrar;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,6 +60,14 @@ class CredentialController extends APIController
                 $request->header('User-Agent')
             )
         );
+    }
+
+    public function logout(Request $request, AuthTokenRepository $repository)
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $repository->deleteAuthToken($user->getAuthToken());
     }
 
 }
