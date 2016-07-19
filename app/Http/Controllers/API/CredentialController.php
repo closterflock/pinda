@@ -68,6 +68,8 @@ class CredentialController extends APIController
         $user = $request->user();
 
         $repository->deleteAuthToken($user->getAuthToken());
+
+        return $this->successResponse();
     }
 
 }
