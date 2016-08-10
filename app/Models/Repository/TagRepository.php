@@ -4,7 +4,6 @@
 namespace App\Models\Repository;
 
 
-use App\Models\AuthToken;
 use App\Models\Tag;
 use App\Models\User;
 use Laracore\Repository\ModelRepository;
@@ -16,7 +15,7 @@ class TagRepository extends ModelRepository
     public function __construct($model = null, RelationInterface $repository = null)
     {
         if (is_null($model)) {
-            $model = AuthToken::class;
+            $model = Tag::class;
         }
 
         parent::__construct($model, $repository);
