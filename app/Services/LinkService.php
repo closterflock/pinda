@@ -48,19 +48,25 @@ class LinkService
      * @param $url
      * @param null $title
      * @param null $description
+     * @param array $tags
      * @return Link
      */
-    public function newLink(ModelFactory $factory, User $user, $url, $title = null, $description = null)
+    public function newLink(ModelFactory $factory, User $user, $url, $title = null, $description = null, array $tags = [])
     {
         $factory->setRepository($this->repository);
 
-        return $factory->make([
+        $link = $factory->make([
             'url' => $url,
             'title' => $title,
             'description' => $description
         ], [
             'user' => $user
         ]);
+
+        $relationRepository = $this->repository->getRelationRepository();
+        $relationRepository->sync($link, 'tags', $tags);
+
+        return $link;
     }
 
 }

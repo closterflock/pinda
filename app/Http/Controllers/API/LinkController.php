@@ -146,7 +146,8 @@ class LinkController extends APIController
             $request->user(),
             $request->url,
             $request->title,
-            $request->description
+            $request->description,
+            $request->tags
         );
 
         return $this->idBackSuccess($link->id);

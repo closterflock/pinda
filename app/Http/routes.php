@@ -26,6 +26,10 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('/save', 'LinkController@updateLink');
             Route::get('/delete', 'LinkController@deleteLink');
         });
+
+        Route::group(['prefix' => 'tags'], function () {
+            Route::post('/new', 'API\TagController@newTag');
+        });
     });
 
     Route::group(['prefix' => '/api/v1'], function () {
@@ -42,6 +46,10 @@ Route::group(['middleware' => 'web'], function () {
                 Route::get('/{link}', 'API\LinkController@getLink');
                 Route::delete('/{link}', 'API\LinkController@deleteLink');
                 Route::put('/{link}', 'API\LinkController@updateLink');
+            });
+
+            Route::group(['prefix' => 'tags'], function () {
+                Route::post('/new', 'TagController@newTag');
             });
         });
     });
