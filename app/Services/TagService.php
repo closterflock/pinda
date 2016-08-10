@@ -4,15 +4,15 @@
 namespace App\Services;
 
 
+use App\Models\Repository\TagRepository;
 use App\Models\Tag;
 use App\Models\User;
 use Laracore\Factory\ModelFactory;
-use Laracore\Repository\ModelRepository;
 
 class TagService
 {
     /**
-     * @var ModelRepository
+     * @var TagRepository
      */
     private $repository;
     /**
@@ -20,9 +20,8 @@ class TagService
      */
     private $factory;
 
-    public function __construct(ModelRepository $repository, ModelFactory $factory)
+    public function __construct(TagRepository $repository, ModelFactory $factory)
     {
-        $repository->setModel(Tag::class);
         $this->repository = $repository;
         $factory->setRepository($repository);
         $this->factory = $factory;
@@ -37,13 +36,9 @@ class TagService
      */
     public function firstOrCreateTag(User $user, $name)
     {
-        /** @var Tag $tag */
         $tag = $this
             ->repository
-            ->query()
-            ->where('name', '=', $name)
-            ->where('user_id', '=', $user->id)
-            ->first();
+            ->getTagForUserByName($user, $name);
 
         if (!is_null($tag)) {
             return $tag;
