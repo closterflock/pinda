@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\API;
 
 
+use App\Models\Repository\TagRepository;
 use App\Services\TagService;
 use Illuminate\Http\Request;
 
@@ -30,5 +31,19 @@ class TagController extends APIController
         return $this->successResponse('Success', ['tag' => $tag->id]);
     }
 
-
+    /**
+     * Retrieves all tags for a user.
+     *
+     * @method GET
+     * @route /api/v1/tags
+     * @param Request $request
+     * @param TagRepository $repository
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getTags(Request $request, TagRepository $repository)
+    {
+        return $this->successResponse('Success', [
+            'tags' => $repository->getAllTagsForUser($request->user())
+        ]);
+    }
 }

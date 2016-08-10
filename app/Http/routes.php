@@ -49,7 +49,8 @@ Route::group(['middleware' => 'web'], function () {
             });
 
             Route::group(['prefix' => 'tags'], function () {
-                Route::post('/new', 'TagController@newTag');
+                Route::get('/', 'API\TagController@getTags');
+                Route::post('/new', 'API\TagController@newTag');
             });
         });
     });

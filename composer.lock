@@ -652,27 +652,27 @@
         },
         {
             "name": "jamesspence/core-model",
-            "version": "1.1.0",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jamesaspence/laravel-core-model.git",
-                "reference": "60d436abc5e1ed6cf50ff407b59bd4e2fa9fda66"
+                "reference": "27bd9bb3a7214fd1eeb8ad08bffc878a8d9e75dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/60d436abc5e1ed6cf50ff407b59bd4e2fa9fda66",
-                "reference": "60d436abc5e1ed6cf50ff407b59bd4e2fa9fda66",
+                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/27bd9bb3a7214fd1eeb8ad08bffc878a8d9e75dc",
+                "reference": "27bd9bb3a7214fd1eeb8ad08bffc878a8d9e75dc",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "^5.2"
+                "illuminate/database": "^5.0"
             },
             "require-dev": {
                 "mockery/mockery": "^0.9.4",
                 "phpunit/phpunit": "^5.3"
             },
             "suggest": {
-                "illuminate/pagination": "(Required to paginate the result set (5.2.*).)"
+                "illuminate/pagination": "(Required to paginate the result set (^5.0).)"
             },
             "type": "library",
             "autoload": {
@@ -691,7 +691,7 @@
                 }
             ],
             "description": "A laravel core model layer, with factories and repositories.",
-            "time": "2016-05-25 22:04:27"
+            "time": "2016-08-10 23:10:53"
         },
         {
             "name": "jeremeamia/SuperClosure",
