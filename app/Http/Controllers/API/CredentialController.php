@@ -32,7 +32,7 @@ class CredentialController extends APIController
             'password' => 'required|min:6',
         ]);
 
-        return $registrar->createUserAndAuthTokenFromRequest($request);
+        return $this->successResponse('Success', $registrar->createUserAndAuthTokenFromRequest($request));
     }
 
     /**
