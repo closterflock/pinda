@@ -127,7 +127,7 @@ class LinkController extends Controller
             $request->url,
             $request->title,
             $request->description,
-            $request->tags
+            $request->get('tags', [])
         );
 
         return redirect('/');
