@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a10d08acbad9d4197eb3123dc08515f6",
-    "content-hash": "342fbfb874a08f12ee550dc81a03c616",
+    "hash": "3a3ebc72b1addcec5dcb961de0ccd350",
+    "content-hash": "2fe7cb5de67b4df276ace74e64ba9452",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -651,17 +651,17 @@
             "time": "2015-04-20 18:58:01"
         },
         {
-            "name": "jamesspence/core-model",
-            "version": "1.1.2",
+            "name": "jamesaspence/core-model",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jamesaspence/laravel-core-model.git",
-                "reference": "27bd9bb3a7214fd1eeb8ad08bffc878a8d9e75dc"
+                "reference": "ff771a83a54f090ff6123341aaace7c522859929"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/27bd9bb3a7214fd1eeb8ad08bffc878a8d9e75dc",
-                "reference": "27bd9bb3a7214fd1eeb8ad08bffc878a8d9e75dc",
+                "url": "https://api.github.com/repos/jamesaspence/laravel-core-model/zipball/ff771a83a54f090ff6123341aaace7c522859929",
+                "reference": "ff771a83a54f090ff6123341aaace7c522859929",
                 "shasum": ""
             },
             "require": {
@@ -691,7 +691,7 @@
                 }
             ],
             "description": "A laravel core model layer, with factories and repositories.",
-            "time": "2016-08-10 23:10:53"
+            "time": "2017-01-11 00:45:27"
         },
         {
             "name": "jeremeamia/SuperClosure",
