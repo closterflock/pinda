@@ -2,11 +2,20 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\API\Exception\ExpectedAPIException;
+use App\Http\Controllers\API\Exception\UnexpectedAPIException;
+use App\Http\Response\APIResponseFactory;
 use Exception;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+    /**
+     * @var APIResponseFactory
+     */
+    private $factory;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -25,6 +34,12 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    public function __construct(Container $container, APIResponseFactory $factory)
+    {
+        parent::__construct($container);
+        $this->factory = $factory;
+    }
 
     /**
      * Report or log an exception.
