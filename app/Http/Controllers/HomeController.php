@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use App\Models\Repository\LinkRepository;
 use Illuminate\Http\Request;
 
