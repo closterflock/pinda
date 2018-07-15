@@ -14,8 +14,7 @@ class LoginTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    const CORRECT_EMAIL = 'test@pinda.jamesspencemilwaukee.com';
-    const CORRECT_PASSWORD = 'secret';
+    use CreatesUsers;
 
     /**
      * Tests that a guest user is redirected when trying to access
@@ -49,7 +48,7 @@ class LoginTest extends TestCase
 
         $response = $this->post($this->getLoginSubmitUrl(), [
             'email' => 'incorrectEmail@pinda.jamesspencemilwaukee.com',
-            'password' => static::CORRECT_PASSWORD
+            'password' => $this->getCorrectPassword()
         ]);
 
         $response->assertSessionHasErrors(['email']);
@@ -63,7 +62,7 @@ class LoginTest extends TestCase
         $this->createUser();
 
         $response = $this->post($this->getLoginSubmitUrl(), [
-            'email' => static::CORRECT_EMAIL,
+            'email' => $this->getCorrectEmail(),
             'password' => 'incorrectPassword'
         ]);
 
@@ -81,8 +80,8 @@ class LoginTest extends TestCase
         $this->createUser();
 
         $response = $this->post($this->getLoginSubmitUrl(), [
-            'email' => static::CORRECT_EMAIL,
-            'password' => static::CORRECT_PASSWORD
+            'email' => $this->getCorrectEmail(),
+            'password' => $this->getCorrectPassword()
         ]);
 
         $response->assertRedirect($this->getSuccessUrl())
@@ -102,24 +101,4 @@ class LoginTest extends TestCase
     private function getLoginSubmitUrl(): string {
         return route('login');
     }
-
-    /**
-     * Creates a mock user.
-     *
-     * @param string|null $email - the email address to use. If not specified, uses the default.
-     * @param string|null $password - the password to use. If not specified, uses the default.
-     * @return User - our newly-created user.
-     */
-    private function createUser(string $email = null, string $password = null): User {
-        $email = $email ?? static::CORRECT_EMAIL;
-        $password = $password ?? \Hash::make(static::CORRECT_PASSWORD);
-
-        $user = factory(User::class)->create([
-            'email' => $email,
-            'password' => $password
-        ]);
-
-        return $user;
-    }
-
 }
