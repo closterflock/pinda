@@ -9,6 +9,7 @@
 namespace App\Models;
 
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 
 /**
@@ -17,6 +18,7 @@ use Illuminate\Foundation\Auth\User;
  */
 class Link extends AbstractModel
 {
+    use SoftDeletes;
 
     public $guarded = ['id'];
 
