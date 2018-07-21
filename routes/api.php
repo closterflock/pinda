@@ -13,9 +13,9 @@ use App\Http\Middleware\VerifyAPIToken;
 |
 */
 
-Route::group(['prefix' => '/v1'], function () {
-    Route::post('/login', 'API\CredentialController@login');
-    Route::post('/register', 'API\CredentialController@registerUser');
+Route::prefix('v1')->name('api.')->group(function () {
+    Route::post('/login', 'API\CredentialController@login')->name('login');
+    Route::post('/register', 'API\CredentialController@registerUser')->name('register');
 
     Route::group(['middleware' => VerifyAPIToken::class], function () {
         Route::delete('/logout', 'API\CredentialController@logout');
