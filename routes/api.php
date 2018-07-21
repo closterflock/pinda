@@ -26,7 +26,7 @@ Route::prefix('v1')->name('api.')->group(function () {
             Route::post('/new', 'API\LinkController@newLink')->name('new');
             Route::get('/{link}', 'API\LinkController@getLink')->name('getLink');
             Route::delete('/{link}', 'API\LinkController@deleteLink')->name('delete');
-            Route::put('/{link}', 'API\LinkController@updateLink')->name('create');
+            Route::put('/{link}', 'API\LinkController@updateLink')->name('update');
         });
 
         Route::prefix('tags')->name('tags.')->group(function () {
