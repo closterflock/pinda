@@ -27,4 +27,14 @@ class LoginTest extends TestCase
     {
         $this->stub();
     }
+
+    public function testLogoutNoToken()
+    {
+        $this->stub();
+    }
+
+    public function testLogoutSuccess()
+    {
+        $this->stub();
+    }
 }
