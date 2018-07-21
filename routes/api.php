@@ -13,7 +13,7 @@ use App\Http\Middleware\VerifyAPIToken;
 |
 */
 
-Route::group(['prefix' => '/api/v1'], function () {
+Route::group(['prefix' => '/v1'], function () {
     Route::post('/login', 'API\CredentialController@login');
     Route::post('/register', 'API\CredentialController@registerUser');
 
