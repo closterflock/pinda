@@ -24,7 +24,9 @@ class LoginTest extends TestCase
     {
         parent::setUp();
 
-        factory(User::class)->create($this->getSuccessCredentials());
+        factory(User::class)->create($this->getSuccessCredentials([
+            'password' => \Hash::make(static::SUCCESS_PASSWORD)
+        ]));
     }
 
     public function testLoginNoCredentials()
@@ -109,6 +111,7 @@ class LoginTest extends TestCase
         $repository->query()
             ->join('auth_tokens', 'users.id', '=', 'auth_tokens.user_id')
             ->where('token', '=', $token->token)
+            ->whereNull('auth_tokens.deleted_at')
             ->where('users.id', '=', $user->id)
             ->firstOrFail();
 
@@ -118,6 +121,7 @@ class LoginTest extends TestCase
         $shouldBeNull = $repository->query()
             ->join('auth_tokens', 'users.id', '=', 'auth_tokens.user_id')
             ->where('token', '=', $token->token)
+            ->whereNull('auth_tokens.deleted_at')
             ->where('users.id', '=', $user->id)
             ->first();
 
