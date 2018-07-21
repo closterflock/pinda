@@ -20,7 +20,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::group(['middleware' => VerifyAPIToken::class], function () {
         Route::delete('/logout', 'API\CredentialController@logout')->name('logout');
 
-        Route::prefix('link')->name('links.')->group(function () {
+        Route::prefix('links')->name('links.')->group(function () {
             Route::get('/', 'API\LinkController@getLinks')->name('getLinks');
             Route::get('/search', 'API\LinkController@getLinksForSearch')->name('search');
             Route::post('/new', 'API\LinkController@newLink')->name('new');
