@@ -20,18 +20,18 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::group(['middleware' => VerifyAPIToken::class], function () {
         Route::delete('/logout', 'API\CredentialController@logout')->name('logout');
 
-        Route::group(['prefix' => 'links'], function () {
-            Route::get('/', 'API\LinkController@getLinks');
-            Route::get('/search', 'API\LinkController@getLinksForSearch');
-            Route::post('/new', 'API\LinkController@newLink');
-            Route::get('/{link}', 'API\LinkController@getLink');
-            Route::delete('/{link}', 'API\LinkController@deleteLink');
-            Route::put('/{link}', 'API\LinkController@updateLink');
+        Route::prefix('link')->name('links.')->group(function () {
+            Route::get('/', 'API\LinkController@getLinks')->name('getLinks');
+            Route::get('/search', 'API\LinkController@getLinksForSearch')->name('search');
+            Route::post('/new', 'API\LinkController@newLink')->name('new');
+            Route::get('/{link}', 'API\LinkController@getLink')->name('getLink');
+            Route::delete('/{link}', 'API\LinkController@deleteLink')->name('delete');
+            Route::put('/{link}', 'API\LinkController@updateLink')->name('create');
         });
 
-        Route::group(['prefix' => 'tags'], function () {
-            Route::get('/', 'API\TagController@getTags');
-            Route::post('/new', 'API\TagController@newTag');
+        Route::prefix('tags')->name('tags.')->group(function () {
+            Route::get('/', 'API\TagController@getTags')->name('getTags');
+            Route::post('/new', 'API\TagController@newTag')->name('create');
         });
     });
 });
