@@ -11,10 +11,6 @@
 |
 */
 
-use App\Http\Middleware\VerifyAPIToken;
-
-Route::auth();
-
 Route::group(['middleware' => 'web'], function () {
     Route::get('/', 'HomeController@index');
 
@@ -32,10 +28,6 @@ Route::group(['middleware' => 'web'], function () {
         });
     });
 });
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 
