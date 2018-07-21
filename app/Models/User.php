@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 /**
  * @property integer id
  * @property string name
+ * @property string email
  */
 class User extends Authenticatable
 {
