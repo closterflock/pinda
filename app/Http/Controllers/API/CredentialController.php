@@ -28,8 +28,8 @@ class CredentialController extends APIController
     {
         $this->validate($request, [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|min:6|confirmed',
         ]);
 
         return $this->successResponse('Success', $registrar->createUserAndAuthTokenFromRequest($request));
