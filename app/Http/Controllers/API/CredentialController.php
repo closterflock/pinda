@@ -47,6 +47,11 @@ class CredentialController extends APIController
      */
     public function login(Request $request, AuthManager $auth, AuthTokenRepository $repository)
     {
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
         if (!$auth->guard()->once(['email' => $request->email, 'password' => $request->password])) {
             return $this->errorResponse('Error', ['Email or password is incorrect.']);
         }
