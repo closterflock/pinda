@@ -66,7 +66,6 @@ class VerifyAPIToken
             ->repository
             ->with('user')
             ->where('token', '=', $apiToken)
-            ->where('ip', '=', $request->ip())
             ->first();
 
         if (!isset($authToken)) {
