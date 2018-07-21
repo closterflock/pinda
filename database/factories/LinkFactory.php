@@ -7,7 +7,7 @@ use Faker\Generator as Faker;
 $factory->define(App\Models\Link::class, function (Faker $faker) {
     return [
         'url' => $faker->url,
-        'title' => $faker->words,
+        'title' => $faker->company,
         'description' => $faker->sentence
     ];
 });
