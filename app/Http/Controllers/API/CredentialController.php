@@ -53,7 +53,7 @@ class CredentialController extends APIController
         ]);
 
         if (!$auth->guard()->once(['email' => $request->email, 'password' => $request->password])) {
-            return $this->errorResponse('Error', ['Email or password is incorrect.']);
+            return $this->errorResponse('Error', ['Email or password is incorrect.'], 401);
         }
 
         return $this->successResponse(
