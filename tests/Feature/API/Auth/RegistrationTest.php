@@ -124,7 +124,8 @@ class RegistrationTest extends TestCase
         $this->assertEquals(static::SUCCESS_EMAIL, $user->email);
     }
 
-    private function getSuccessCredentials(array $overrides = []): array {
+    private function getSuccessCredentials(array $overrides = []): array
+    {
         return array_merge([
             'name' => static::SUCCESS_NAME,
             'email' => static::SUCCESS_EMAIL,
@@ -133,7 +134,8 @@ class RegistrationTest extends TestCase
         ], $overrides);
     }
 
-    private function register(array $params = []): TestResponse {
+    private function register(array $params = []): TestResponse
+    {
         return $this->postJson(route('api.register'), $params);
     }
 }
