@@ -28,8 +28,8 @@ class CredentialController extends APIController
     {
         $this->validate($request, [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|min:6|confirmed',
         ]);
 
         return $this->successResponse('Success', $registrar->createUserAndAuthTokenFromRequest($request));
@@ -47,8 +47,13 @@ class CredentialController extends APIController
      */
     public function login(Request $request, AuthManager $auth, AuthTokenRepository $repository)
     {
-        if (!$auth->once(['email' => $request->email, 'password' => $request->password])) {
-            return $this->errorResponse('Error', ['Email or password is incorrect.']);
+        $this->validate($request, [
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if (!$auth->guard()->once(['email' => $request->email, 'password' => $request->password])) {
+            return $this->errorResponse('Error', ['Email or password is incorrect.'], 401);
         }
 
         return $this->successResponse(

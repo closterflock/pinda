@@ -22,30 +22,6 @@ abstract class APIController extends Controller
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function callAction($method, $parameters)
-    {
-       try {
-           return parent::callAction($method, $parameters);
-       } catch (ExpectedAPIException $e) {
-           throw $e;
-       } catch (\Exception $e) {
-            throw new UnexpectedAPIException($e->getMessage(), $e->getCode(), $e);
-       }
-    }
-
-    /**
-     * @param Request $request
-     * @param \Illuminate\Validation\Validator $validator
-     * @throws ExpectedAPIException
-     */
-    public function throwValidationException(Request $request, $validator)
-    {
-        throw new ExpectedAPIException($validator->errors()->toArray());
-    }
-
-    /**
      * Creates a success response.
      *
      * @param string $message

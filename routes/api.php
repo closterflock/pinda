@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Middleware\VerifyAPIToken;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +13,25 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('v1')->name('api.')->group(function () {
+    Route::post('/login', 'API\CredentialController@login')->name('login');
+    Route::post('/register', 'API\CredentialController@registerUser')->name('register');
+
+    Route::group(['middleware' => VerifyAPIToken::class], function () {
+        Route::delete('/logout', 'API\CredentialController@logout')->name('logout');
+
+        Route::prefix('links')->name('links.')->group(function () {
+            Route::get('/', 'API\LinkController@getLinks')->name('getLinks');
+            Route::get('/search', 'API\LinkController@getLinksForSearch')->name('search');
+            Route::post('/new', 'API\LinkController@newLink')->name('new');
+            Route::get('/{link}', 'API\LinkController@getLink')->name('getLink');
+            Route::delete('/{link}', 'API\LinkController@deleteLink')->name('delete');
+            Route::put('/{link}', 'API\LinkController@updateLink')->name('update');
+        });
+
+        Route::prefix('tags')->name('tags.')->group(function () {
+            Route::get('/', 'API\TagController@getTags')->name('getTags');
+            Route::post('/new', 'API\TagController@newTag')->name('create');
+        });
+    });
 });
