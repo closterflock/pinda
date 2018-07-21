@@ -31,8 +31,6 @@ Route::group(['middleware' => 'web'], function () {
             Route::post('/new', 'API\TagController@newTag');
         });
     });
-
-    Route::post('/token', 'Auth\TokenController@newToken');
 });
 
 Auth::routes();
