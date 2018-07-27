@@ -17,7 +17,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::post('/login', 'API\CredentialController@login')->name('login');
     Route::post('/register', 'API\CredentialController@registerUser')->name('register');
 
-    Route::group(['middleware' => VerifyAPIToken::class], function () {
+    Route::group(['middleware' => 'auth:api'], function () {
         Route::delete('/logout', 'API\CredentialController@logout')->name('logout');
 
         Route::prefix('links')->name('links.')->group(function () {
