@@ -90,26 +90,6 @@ class LinkRepository extends ModelRepository
     }
 
     /**
-     * Retrieves links based on a search.
-     *
-     * @param $term
-     * @return Collection
-     */
-    public function getLinksForSearch($term)
-    {
-        $wildcardTerm = '%' . $term . '%';
-        $links = $this
-            ->buildTagJoins()
-            ->with('tags')
-            ->where('links.title', 'LIKE', $wildcardTerm)
-            ->orWhere('links.description', 'LIKE', $wildcardTerm)
-            ->orWhere('tags.name', 'LIKE', $wildcardTerm)
-            ->get();
-
-        return $links;
-    }
-
-    /**
      * Retrieves all links since last sync.
      * When timestamp is null, all records will be retrieved.
      *
