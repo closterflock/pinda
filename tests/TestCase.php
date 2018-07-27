@@ -1,25 +1,21 @@
 <?php
 
-class TestCase extends Illuminate\Foundation\Testing\TestCase
+namespace Tests;
+
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
 {
-    /**
-     * The base URL to use while testing the application.
-     *
-     * @var string
-     */
-    protected $baseUrl = 'http://localhost';
+    use CreatesApplication;
 
     /**
-     * Creates the application.
+     * Creates a stub for a test to be written.
+     * Marks it as incomplete with a generic message.
      *
-     * @return \Illuminate\Foundation\Application
+     * @param string $message - an optional message to be supplied. A default message is used if not specified.
      */
-    public function createApplication()
+    public function stub($message = 'Stub for test that needs to be written.')
     {
-        $app = require __DIR__.'/../bootstrap/app.php';
-
-        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-
-        return $app;
+        $this->markTestIncomplete($message);
     }
 }

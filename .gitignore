@@ -4,6 +4,11 @@
 Homestead.yaml
 Homestead.json
 .env
+.env.testing
 .idea
 .vagrant
 Homestead.yaml
+_ide_helper.php
+public/css
+public/js
+.phpstorm.meta.php
