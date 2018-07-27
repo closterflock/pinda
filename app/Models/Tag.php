@@ -4,8 +4,12 @@
 namespace App\Models;
 
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Tag extends AbstractModel
 {
+    use SoftDeletes;
+
     public $fillable = ['name'];
 
     public $timestamps = false;

@@ -6,6 +6,8 @@ namespace App\Models\Repository;
 
 use App\Models\Tag;
 use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Laracore\Repository\ModelRepository;
 use Laracore\Repository\Relation\RelationInterface;
 
@@ -49,4 +51,26 @@ class TagRepository extends ModelRepository
             ->get();
     }
 
+    /**
+     * Retrieves all tags since last sync.
+     * When timestamp is null, all records will be retrieved.
+     *
+     * @param User $user - the user attempting to sync.
+     * @param Carbon|null $timestamp - the last timestamp that we are syncing from. Can be null.
+     * @return Collection
+     */
+    public function getTagsSinceLastSync(User $user, Carbon $timestamp = null): Collection
+    {
+        $query = $this->query()
+            ->where('user_id', '=', $user->id);
+
+        if (is_null($timestamp)) {
+            return $query->get();
+        }
+
+        return $this->query()
+            ->withTrashed()
+            ->where('updated_at', '>', $timestamp)
+            ->get();
+    }
 }

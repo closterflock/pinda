@@ -11,7 +11,9 @@ namespace App\Models\Repository;
 
 use App\Models\Link;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Database\Query\Builder;
 use Laracore\Repository\ModelRepository;
 
@@ -105,6 +107,44 @@ class LinkRepository extends ModelRepository
             ->get();
 
         return $links;
+    }
+
+    /**
+     * Retrieves all links since last sync.
+     * When timestamp is null, all records will be retrieved.
+     *
+     * @param User $user - the user attempting to sync.
+     * @param Carbon|null $timestamp - the last timestamp that we are syncing from. Can be null.
+     * @return Collection
+     */
+    public function getLinksSinceLastSync(User $user, Carbon $timestamp = null): Collection
+    {
+        $query = $this->query()
+            ->where('user_id', '=', $user->id);
+
+        if (is_null($timestamp)) {
+            return $query->get();
+        }
+
+        return $this->query()
+            ->withTrashed()
+            ->where('updated_at', '>', $timestamp)
+            ->get();
+    }
+
+    /**
+     * Retrieves all associative linkTag records between a set of links and tags.
+     *
+     * @param Collection $links
+     * @param Collection $tags
+     * @return SupportCollection
+     */
+    public function getAllLinkTags(Collection $links, Collection $tags): SupportCollection
+    {
+        return \DB::table('link_tag')
+            ->whereIn('link_id', $links->pluck('id'))
+            ->orWhereIn('tag_id', $tags->pluck('id'))
+            ->get();
     }
 
 }
