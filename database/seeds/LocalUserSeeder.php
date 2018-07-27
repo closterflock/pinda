@@ -19,11 +19,8 @@ class LocalUserSeeder extends Seeder
                 'email' => 'test@pinda.test'
             ]);
         $this->command->info('Successfully seeded auth user.');
+        $this->command->info('Email address is: ' . $user->email);
+        $this->command->info('Password is: secret');
         $this->command->info('Auth token is: ' . $user->getAuthToken()->token);
-        //TODO create test user
-        //TODO create with email test@pinda.test
-        //TODO create with password 'secret'
-        //TODO create with auth token for API access
-        //TODO use factory with state to generate auth token?
     }
 }
