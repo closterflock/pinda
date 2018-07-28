@@ -106,17 +106,34 @@ class LinkCrudTest extends TestCase
 
         $responseLink = $data['link'];
 
-        $this->assertEquals($link->id, $responseLink['id']); 
+        $this->assertEquals($link->id, $responseLink['id']);
     }
 
     public function testDeleteLinkNotOwnedByUser()
     {
-        $this->stub();
+        $otherUser = $this->createUser();
+        $link = $this->createLink($otherUser);
+
+        $url = $this->generateRouteForLink($link->id, 'delete');
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertForbidden();
     }
 
     public function testDeleteLinkSuccess()
     {
-        $this->stub();
+        $link = $this->createLink($this->user);
+
+        $url = $this->generateRouteForLink($link->id, 'delete');
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertSuccessful();
+
+        /** @var Link $link */
+        $link = Link::withTrashed()->find($link->id);
+        $this->assertTrue($link->trashed());
     }
 
     public function testUpdateLinkNotOwnedByUser()
