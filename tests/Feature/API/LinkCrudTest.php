@@ -90,7 +90,23 @@ class LinkCrudTest extends TestCase
 
     public function testGetLinkSuccess()
     {
-        $this->stub();
+        $link = $this->createLink($this->user);
+
+        $url = $this->generateRouteForLink($link->id, 'getLink');
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('link', $data);
+
+        $responseLink = $data['link'];
+
+        $this->assertEquals($link->id, $responseLink['id']); 
     }
 
     public function testDeleteLinkNotOwnedByUser()
