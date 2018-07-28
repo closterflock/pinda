@@ -59,16 +59,6 @@ class LinkCrudTest extends TestCase
         }
     }
 
-    public function testNewLinkValidationFailure()
-    {
-
-    }
-
-    public function testNewLinkSuccess()
-    {
-        $this->stub();
-    }
-
     public function testGetLinkNotFound()
     {
         $this->stub();
@@ -80,11 +70,6 @@ class LinkCrudTest extends TestCase
     }
 
     public function testGetLinkSuccess()
-    {
-        $this->stub();
-    }
-
-    public function testDeleteLinkNotFound()
     {
         $this->stub();
     }
@@ -105,6 +90,21 @@ class LinkCrudTest extends TestCase
     }
 
     public function testUpdateLinkSuccess()
+    {
+        $this->stub();
+    }
+
+    public function testNewLinkValidationFailure()
+    {
+
+    }
+
+    public function testNewLinkSuccess()
+    {
+        $this->stub();
+    }
+
+    public function testDeleteLinkNotFound()
     {
         $this->stub();
     }
