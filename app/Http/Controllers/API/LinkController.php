@@ -50,16 +50,11 @@ class LinkController extends APIController
      *
      * @route /api/v1/links/{link}
      * @method GET
-     * @param Request $request
      * @param Link $link
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function getLink(Request $request, Link $link)
+    public function getLink(Link $link)
     {
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return $this->belongsToOtherError();
-        }
-
         return $this->successResponse('Success', [
             'link' => $link
         ]);
@@ -71,16 +66,11 @@ class LinkController extends APIController
      * @route /api/v1/links/{link}
      * @method DELETE
      * @param Link $link
-     * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteLink(Link $link, Request $request)
+    public function deleteLink(Link $link)
     {
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return $this->belongsToOtherError();
-        }
-
         $link->delete();
         return $this->successResponse();
     }
@@ -96,10 +86,6 @@ class LinkController extends APIController
      */
     public function updateLink(Request $request, Link $link)
     {
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return $this->belongsToOtherError();
-        }
-
         $link->fill([
             'title' => $request->title,
             'description' => $request->description

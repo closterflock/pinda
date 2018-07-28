@@ -23,9 +23,15 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::prefix('links')->name('links.')->group(function () {
             Route::get('/', 'API\LinkController@getLinks')->name('getLinks');
             Route::post('/new', 'API\LinkController@newLink')->name('new');
-            Route::get('/{link}', 'API\LinkController@getLink')->name('getLink');
-            Route::delete('/{link}', 'API\LinkController@deleteLink')->name('delete');
-            Route::put('/{link}', 'API\LinkController@updateLink')->name('update');
+            Route::get('/{link}', 'API\LinkController@getLink')
+                ->middleware('can:view,link')
+                ->name('getLink');
+            Route::delete('/{link}', 'API\LinkController@deleteLink')
+                ->middleware('can:delete,link')
+                ->name('delete');
+            Route::put('/{link}', 'API\LinkController@updateLink')
+                ->middleware('can:update,link')
+                ->name('update');
         });
 
         Route::prefix('tags')->name('tags.')->group(function () {
