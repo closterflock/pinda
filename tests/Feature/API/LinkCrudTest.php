@@ -94,7 +94,7 @@ class LinkCrudTest extends TestCase
 
     public function testNewLinkValidationFailure()
     {
-
+        $this->stub();
     }
 
     public function testNewLinkSuccess()
@@ -107,7 +107,28 @@ class LinkCrudTest extends TestCase
         $this->stub();
     }
 
-    private function createLinks(User $user, $number = 3) {
+    /**
+     * Generates a single link and returns it.
+     * @see LinkCrudTest::createLinks()
+     *
+     * @param User $user
+     * @return Link
+     */
+    private function createLink(User $user): Link
+    {
+        return $this->createLinks($user, 1)
+            ->first();
+    }
+
+    /**
+     * Generates the specified number of links and returns them.
+     *
+     * @param User $user - the user to associate the links with.
+     * @param int $number - the number of links to generate. Default is 3.
+     * @return Collection - returns a collection of links.
+     */
+    private function createLinks(User $user, $number = 3): Collection
+    {
         return factory(Link::class, $number)
             ->make()
             ->each(function (Link $link) use ($user) {
