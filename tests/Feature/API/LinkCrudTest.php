@@ -59,7 +59,22 @@ class LinkCrudTest extends TestCase
 
     public function testGetLinkNotFound()
     {
-        $this->stub();
+        /** @var Link $link */
+        $link = $this->createLink($this->user);
+
+        //Iterate by one to get an id that doesn't exist.
+        $id = $link->id + 1;
+
+        $response = $this->makeRequest(
+            route('api.links.getLink', [
+                'link' => (string) $id
+            ]),
+            'GET',
+            [],
+            $this->user
+        );
+
+        $response->assertNotFound();
     }
 
     public function testGetLinkNotOwnedByUser()
