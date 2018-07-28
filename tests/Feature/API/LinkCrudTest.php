@@ -237,7 +237,7 @@ class LinkCrudTest extends TestCase
 
     /**
      * Generates a single link and returns it.
-     * @see LinkCrudTest::createLinks()
+     * @see createLinks()
      *
      * @param User $user
      * @return Link
