@@ -18,16 +18,6 @@ class LinkCrudTest extends TestCase
         $this->stub();
     }
 
-    public function testSearchLinksNoSearchTerm()
-    {
-        $this->stub();
-    }
-
-    public function testSearchLinks()
-    {
-        $this->stub();
-    }
-
     public function testNewLinkValidationFailure()
     {
         $this->stub();
