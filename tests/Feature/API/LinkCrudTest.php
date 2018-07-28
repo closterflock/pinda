@@ -9,14 +9,12 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Tests\TestCase;
 
 class LinkCrudTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
-    use WithoutMiddleware;
     use MakesAuthenticatedRequest;
 
     /**

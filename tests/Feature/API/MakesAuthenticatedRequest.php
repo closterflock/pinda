@@ -47,7 +47,7 @@ trait MakesAuthenticatedRequest
             return $this->json($method, $url, $params, $headers);
         }
 
-        return $this->actingAs($user)
+        return $this->actingAs($user, 'api')
             ->json($method, $url, $params, $headers);
     }
 
