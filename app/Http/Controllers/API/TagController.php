@@ -38,7 +38,7 @@ class TagController extends APIController
      * @route /api/v1/tags
      * @param Request $request
      * @param TagRepository $repository
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\Response
      */
     public function getTags(Request $request, TagRepository $repository)
     {
