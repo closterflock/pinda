@@ -176,6 +176,7 @@ class LinkCrudTest extends TestCase
         $link = $this->createLink($this->user);
 
         $params = [
+            'url' => 'http://updated.pinda.test',
             'title' => 'New description',
             'description' => 'New description'
         ];
@@ -189,8 +190,67 @@ class LinkCrudTest extends TestCase
         /** @var Link $refreshedLink */
         $refreshedLink = Link::findOrFail($link->id);
 
+        $this->assertEquals($refreshedLink->url, $params['url']);
         $this->assertEquals($refreshedLink->title, $params['title']);
         $this->assertEquals($refreshedLink->description, $params['description']);
+    }
+
+    public function testUpdateLinkNewUrlAlreadyExists()
+    {
+        $params = [
+            'url' => 'http://pinda.test'
+        ];
+        $this->createLink($this->user, $params);
+
+        $link = $this->createLink($this->user);
+        $url = $this->generateRouteForLink($link->id, 'update');
+
+        $response = $this->makeRequest($url, 'PUT', $params, $this->user);
+
+        $response->assertStatus(422);
+
+        $response->assertJsonValidationErrors([
+            'url'
+        ]);
+
+        $secondTryResponse = $this->makeRequest($url, 'PUT', [
+            'url' => 'http://brandNewUrl.pinda.test'
+        ], $this->user);
+
+        $secondTryResponse->assertSuccessful();
+    }
+
+    public function testUpdateLinkUrlNotInUseByUser()
+    {
+
+        $otherUser = $this->createUser();
+
+        $linkUrl = 'http://pinda.test';
+        $params = [
+            'url' => $linkUrl
+        ];
+        $this->createLink($otherUser, $params);
+
+        $link = $this->createLink($this->user);
+
+        $url = $this->generateRouteForLink($link->id, 'update');
+        $response = $this->makeRequest($url, 'PUT', $params, $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('id', $data);
+
+        $id = $data['id'];
+
+        /** @var Link $link */
+        $link = Link::findOrFail($id);
+
+        $this->assertEquals($params['url'], $link->url);
+        $this->assertEquals($id, $link->id);
     }
 
     public function testNewLinkValidationFailure()
@@ -235,16 +295,65 @@ class LinkCrudTest extends TestCase
         $this->assertEquals($id, $link->id);
     }
 
+    public function testNewLinkUrlAlreadyUsed()
+    {
+        $url = route('api.links.new');
+
+        $linkUrl = 'http://pinda.test';
+        $params = [
+            'url' => $linkUrl
+        ];
+        $this->createLink($this->user, $params);
+
+        $response = $this->makeRequest($url, 'POST', $params, $this->user);
+
+        $response->assertJsonValidationErrors([
+            'url'
+        ]);
+    }
+
+    public function testNewLinkUrlNotInUseByUser()
+    {
+        $url = route('api.links.new');
+
+        $otherUser = $this->createUser();
+
+        $linkUrl = 'http://pinda.test';
+        $params = [
+            'url' => $linkUrl
+        ];
+        $this->createLink($otherUser, $params);
+
+        $response = $this->makeRequest($url, 'POST', $params, $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('id', $data);
+
+        $id = $data['id'];
+
+        /** @var Link $link */
+        $link = Link::findOrFail($id);
+
+        $this->assertEquals($params['url'], $link->url);
+        $this->assertEquals($id, $link->id);
+    }
+
     /**
      * Generates a single link and returns it.
      * @see createLinks()
      *
      * @param User $user
+     * @param array $attributes
      * @return Link
      */
-    private function createLink(User $user): Link
+    private function createLink(User $user, array $attributes = []): Link
     {
-        return $this->createLinks($user, 1)
+        return $this->createLinks($user, 1, $attributes)
             ->first();
     }
 
@@ -253,12 +362,13 @@ class LinkCrudTest extends TestCase
      *
      * @param User $user - the user to associate the links with.
      * @param int $number - the number of links to generate. Default is 3.
+     * @param array $attributes - attributes to be used. Would override default attributes.
      * @return Collection - returns a collection of links.
      */
-    private function createLinks(User $user, $number = 3): Collection
+    private function createLinks(User $user, $number = 3, array $attributes = []): Collection
     {
         return factory(Link::class, $number)
-            ->make()
+            ->make($attributes)
             ->each(function (Link $link) use ($user) {
                 $link->user()->associate($user);
                 $link->save();
