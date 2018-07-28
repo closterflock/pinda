@@ -109,6 +109,19 @@ class LinkCrudTest extends TestCase
         $this->assertEquals($link->id, $responseLink['id']);
     }
 
+    public function testDeleteLinkNotFound()
+    {
+        $link = $this->createLink($this->user);
+
+        $id = $link->id + 1;
+
+        $url = $this->generateRouteForLink($id, 'delete');
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertNotFound();
+    }
+
     public function testDeleteLinkNotOwnedByUser()
     {
         $otherUser = $this->createUser();
@@ -152,11 +165,6 @@ class LinkCrudTest extends TestCase
     }
 
     public function testNewLinkSuccess()
-    {
-        $this->stub();
-    }
-
-    public function testDeleteLinkNotFound()
     {
         $this->stub();
     }
