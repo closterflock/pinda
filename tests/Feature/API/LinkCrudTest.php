@@ -66,9 +66,7 @@ class LinkCrudTest extends TestCase
         $id = $link->id + 1;
 
         $response = $this->makeRequest(
-            route('api.links.getLink', [
-                'link' => (string) $id
-            ]),
+            $this->generateRouteForLink($id, 'getLink'),
             'GET',
             [],
             $this->user
@@ -79,7 +77,15 @@ class LinkCrudTest extends TestCase
 
     public function testGetLinkNotOwnedByUser()
     {
-        $this->stub();
+        $otherUser = $this->createUser();
+
+        $link = $this->createLink($otherUser);
+
+        $url = $this->generateRouteForLink($link->id, 'getLink');
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+
+        $response->assertForbidden();
     }
 
     public function testGetLinkSuccess()
@@ -150,5 +156,19 @@ class LinkCrudTest extends TestCase
                 $link->user()->associate($user);
                 $link->save();
             });
+    }
+
+    /**
+     * Generates a route link based on the provided link and suffix.
+     *
+     * @param integer $linkId - the link id.
+     * @param string $routeNameSuffix - the route name after "api.links.", i.e. "getLink"
+     * @return string - the generated url.
+     */
+    private function generateRouteForLink(int $linkId, string $routeNameSuffix): string
+    {
+        return route('api.links.' . $routeNameSuffix, [
+            'link' => $linkId
+        ]);
     }
 }
