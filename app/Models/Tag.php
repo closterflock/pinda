@@ -6,6 +6,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int id
+ * @property int user_id
+ * @property string name
+ */
 class Tag extends AbstractModel
 {
     use SoftDeletes;
@@ -13,6 +18,10 @@ class Tag extends AbstractModel
     public $fillable = ['name'];
 
     public $timestamps = false;
+
+    protected $casts = [
+        'user_id' => 'int'
+    ];
 
     public function links()
     {

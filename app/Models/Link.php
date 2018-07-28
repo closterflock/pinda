@@ -10,15 +10,22 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User;
 
 /**
  * @property mixed id
  * @property mixed user_id
+ * @property User user
+ * @property string title
+ * @property string description
+ * @property string url
  */
 class Link extends AbstractModel
 {
     use SoftDeletes;
+
+    protected $casts = [
+        'user_id' => 'int'
+    ];
 
     public $guarded = ['id'];
 
