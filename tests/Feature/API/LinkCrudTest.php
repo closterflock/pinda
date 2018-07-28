@@ -149,24 +149,90 @@ class LinkCrudTest extends TestCase
         $this->assertTrue($link->trashed());
     }
 
+    public function testUpdateLinkNotFound()
+    {
+        $url = $this->generateRouteForLink(1, 'update');
+
+        $response = $this->makeRequest($url, 'PUT', [], $this->user);
+
+        $response->assertNotFound();
+    }
+
     public function testUpdateLinkNotOwnedByUser()
     {
-        $this->stub();
+        $otherUser = $this->createUser();
+
+        $link = $this->createLink($otherUser);
+
+        $url = $this->generateRouteForLink($link->id, 'update');
+
+        $response = $this->makeRequest($url, 'PUT', [], $this->user);
+
+        $response->assertForbidden();
     }
 
     public function testUpdateLinkSuccess()
     {
-        $this->stub();
+        $link = $this->createLink($this->user);
+
+        $params = [
+            'title' => 'New description',
+            'description' => 'New description'
+        ];
+
+        $url = $this->generateRouteForLink($link->id, 'update');
+
+        $response = $this->makeRequest($url, 'PUT', $params, $this->user);
+
+        $response->assertSuccessful();
+
+        /** @var Link $refreshedLink */
+        $refreshedLink = Link::findOrFail($link->id);
+
+        $this->assertEquals($refreshedLink->title, $params['title']);
+        $this->assertEquals($refreshedLink->description, $params['description']);
     }
 
     public function testNewLinkValidationFailure()
     {
-        $this->stub();
+        $url = route('api.links.new');
+
+        $response = $this->makeRequest($url, 'POST', [], $this->user);
+
+        $response->assertJsonValidationErrors([
+            'url'
+        ]);
     }
 
     public function testNewLinkSuccess()
     {
-        $this->stub();
+        $url = route('api.links.new');
+
+        $params = [
+            'url' => $this->faker->url,
+            'title' => $this->faker->company,
+            'description' => $this->faker->text
+        ];
+
+        $response = $this->makeRequest($url, 'POST', $params, $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('id', $data);
+
+        $id = $data['id'];
+
+        /** @var Link $link */
+        $link = Link::findOrFail($id);
+
+        $this->assertEquals($params['url'], $link->url);
+        $this->assertEquals($params['title'], $link->title);
+        $this->assertEquals($params['description'], $link->description);
+        $this->assertEquals($id, $link->id);
     }
 
     /**
