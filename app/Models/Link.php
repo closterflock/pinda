@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property mixed id
  * @property mixed user_id
  * @property User user
+ * @property string title
+ * @property string description
+ * @property string url
  */
 class Link extends AbstractModel
 {
