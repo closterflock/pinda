@@ -30,7 +30,7 @@ Route::prefix('v1')->name('api.')->group(function () {
 
         Route::prefix('tags')->name('tags.')->group(function () {
             Route::get('/', 'API\TagController@getTags')->name('getTags');
-            Route::post('/new', 'API\TagController@newTag')->name('create');
+            Route::post('/new', 'API\TagController@newTag')->name('new');
         });
 
         Route::get('sync', 'API\SyncController@syncData')->name('sync');
