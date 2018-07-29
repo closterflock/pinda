@@ -25,7 +25,7 @@ class TagController extends APIController
     {
         $tag = $service->firstOrCreateTag($request->user(), $request->name);
 
-        return $this->successResponse('Success', ['id' => $tag->id]);
+        return $this->idBackSuccess($tag->id);
     }
 
     /**
