@@ -253,6 +253,36 @@ class LinkCrudTest extends TestCase
         $this->assertEquals($id, $link->id);
     }
 
+    public function testUpdateLinkUrlNotChanged()
+    {
+        $linkUrl = 'http://pinda.test';
+
+        $link = $this->createLink($this->user, [
+            'url' => $linkUrl,
+            'title' => 'Title',
+            'description' => 'Description'
+        ]);
+
+        $params = [
+            'url' => $linkUrl,
+            'title' => 'New title',
+            'description' => 'New description'
+        ];
+
+        $url = $this->generateRouteForLink($link->id, 'update');
+
+        $response = $this->makeRequest($url, 'PUT', $params, $this->user);
+
+        $response->assertSuccessful();
+
+        /** @var Link $refreshedLink */
+        $refreshedLink = Link::findOrFail($link->id);
+
+        $this->assertEquals($refreshedLink->url, $params['url']);
+        $this->assertEquals($refreshedLink->title, $params['title']);
+        $this->assertEquals($refreshedLink->description, $params['description']);
+    }
+
     public function testNewLinkValidationFailure()
     {
         $url = route('api.links.new');
