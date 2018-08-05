@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\AuthToken;
+use App\Models\Link;
+use App\Policies\LinkPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laracore\Repository\ModelRepository;
@@ -15,7 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        Link::class => LinkPolicy::class
     ];
 
     /**

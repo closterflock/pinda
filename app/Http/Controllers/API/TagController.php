@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\API;
 
 
+use App\Http\Requests\TagRequest;
 use App\Models\Repository\TagRepository;
 use App\Services\TagService;
 use Illuminate\Http\Request;
@@ -16,19 +17,15 @@ class TagController extends APIController
      *
      * @method PUT
      * @route /api/v1/tags/new
-     * @param Request $request
+     * @param TagRequest $request
      * @param TagService $service
      * @return \Illuminate\Http\Response
      */
-    public function newTag(Request $request, TagService $service)
+    public function newTag(TagRequest $request, TagService $service)
     {
-        $this->validate($request, [
-            'name' => 'required|string'
-        ]);
-
         $tag = $service->firstOrCreateTag($request->user(), $request->name);
 
-        return $this->successResponse('Success', ['id' => $tag->id]);
+        return $this->idBackSuccess($tag->id);
     }
 
     /**
@@ -38,7 +35,7 @@ class TagController extends APIController
      * @route /api/v1/tags
      * @param Request $request
      * @param TagRepository $repository
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Http\Response
      */
     public function getTags(Request $request, TagRepository $repository)
     {

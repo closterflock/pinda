@@ -4,11 +4,11 @@
 namespace App\Http\Controllers\API;
 
 
+use App\Http\Requests\LinkRequest;
 use App\Http\Response\APIResponseFactory;
 use App\Models\Link;
 use App\Models\Repository\LinkRepository;
 use App\Services\LinkService;
-use App\Services\Validator\LinkValidator;
 use Illuminate\Http\Request;
 use Laracore\Factory\ModelFactory;
 
@@ -18,16 +18,11 @@ class LinkController extends APIController
      * @var LinkRepository
      */
     private $repository;
-    /**
-     * @var LinkValidator
-     */
-    private $validator;
 
-    public function __construct(APIResponseFactory $responseFactory, LinkRepository $repository, LinkValidator $validator)
+    public function __construct(APIResponseFactory $responseFactory, LinkRepository $repository)
     {
         parent::__construct($responseFactory);
         $this->repository = $repository;
-        $this->validator = $validator;
     }
 
     /**
@@ -50,16 +45,11 @@ class LinkController extends APIController
      *
      * @route /api/v1/links/{link}
      * @method GET
-     * @param Request $request
      * @param Link $link
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function getLink(Request $request, Link $link)
+    public function getLink(Link $link)
     {
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return $this->belongsToOtherError();
-        }
-
         return $this->successResponse('Success', [
             'link' => $link
         ]);
@@ -71,16 +61,11 @@ class LinkController extends APIController
      * @route /api/v1/links/{link}
      * @method DELETE
      * @param Link $link
-     * @param Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      * @throws \Exception
      */
-    public function deleteLink(Link $link, Request $request)
+    public function deleteLink(Link $link)
     {
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return $this->belongsToOtherError();
-        }
-
         $link->delete();
         return $this->successResponse();
     }
@@ -90,17 +75,14 @@ class LinkController extends APIController
      *
      * @route /api/v1/links/{link}
      * @method PUT
-     * @param Request $request
+     * @param LinkRequest $request
      * @param Link $link
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function updateLink(Request $request, Link $link)
+    public function updateLink(LinkRequest $request, Link $link)
     {
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return $this->belongsToOtherError();
-        }
-
         $link->fill([
+            'url' => $request->url,
             'title' => $request->title,
             'description' => $request->description
         ]);
@@ -114,18 +96,12 @@ class LinkController extends APIController
      *
      * @route /api/v1/links/new
      * @method PUT
-     * @param Request $request
+     * @param LinkRequest $request
      * @param LinkService $service
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function newLink(Request $request, LinkService $service)
+    public function newLink(LinkRequest $request, LinkService $service)
     {
-        $this->validator->validate($this, $request);
-
-        if ($this->validator->linkAlreadyExists($this->repository, $request->user(), $request->url)) {
-            return $this->resourceExistsError();
-        }
-
         $link = $service->newLink(
             new ModelFactory(),
             $request->user(),
