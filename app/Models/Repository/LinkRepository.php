@@ -109,6 +109,7 @@ class LinkRepository extends ModelRepository
         return $this->query()
             ->withTrashed()
             ->where('updated_at', '>', $timestamp)
+            ->orWhere('deleted_at', '>', $timestamp)
             ->get();
     }
 
