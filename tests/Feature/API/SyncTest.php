@@ -112,6 +112,16 @@ class SyncTest extends TestCase
         $this->assertEquals($linkId, $deletedLinks[0]['id']);
     }
 
+    public function testSyncDeletedTagNoLinkTagProvided()
+    {
+        //TODO generate link
+        //TODO generate tag
+        //TODO generate relation between the two
+        //TODO delete tag
+        //TODO ensure link_tag is not returned
+        $this->stub();
+    }
+
     private function sync($timestampString = null, User $user = null): TestResponse
     {
         $url = route('api.sync');
