@@ -59,7 +59,7 @@ class TagCrudTest extends TestCase
 
     public function testCreateTagValidationFailure()
     {
-        $url = route('api.tags.new');
+        $url = route('api.tags.store');
 
         $response = $this->makeRequest($url, 'POST', [], $this->user);
 
@@ -72,7 +72,7 @@ class TagCrudTest extends TestCase
 
     public function testCreateTagSuccess()
     {
-        $url = route('api.tags.new');
+        $url = route('api.tags.store');
 
         $params = [
             'name' => $this->faker->word
@@ -99,7 +99,7 @@ class TagCrudTest extends TestCase
     {
         $tag = $this->createTag($this->user);
 
-        $url = route('api.tags.new');
+        $url = route('api.tags.store');
 
         $params = [
             'name' => $tag->name
