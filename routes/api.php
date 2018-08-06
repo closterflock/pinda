@@ -37,6 +37,17 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::prefix('tags')->name('tags.')->group(function () {
             Route::get('/', 'TagController@getTags')->name('getTags');
             Route::post('/', 'TagController@newTag')->name('store');
+            Route::prefix('{tag}')->group(function () {
+                Route::get('/', 'TagController@getTag')
+                    ->middleware('can:view,tag')
+                    ->name('getTag');
+                Route::put('/', 'TagController@updateTag')
+                    ->middleware('can:update,tag')
+                    ->name('update');
+                Route::delete('/', 'TagController@deleteTag')
+                    ->middleware('can:delete,tag')
+                    ->name('delete');
+            });
         });
 
         Route::get('sync', 'SyncController@syncData')->name('sync');
