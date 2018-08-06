@@ -22,7 +22,7 @@ Route::prefix('v1')->name('api.')->group(function () {
 
         Route::prefix('links')->name('links.')->group(function () {
             Route::get('/', 'API\LinkController@getLinks')->name('getLinks');
-            Route::post('/new', 'API\LinkController@newLink')->name('new');
+            Route::post('/', 'API\LinkController@newLink')->name('store');
             Route::get('/{link}', 'API\LinkController@getLink')
                 ->middleware('can:view,link')
                 ->name('getLink');
@@ -36,7 +36,7 @@ Route::prefix('v1')->name('api.')->group(function () {
 
         Route::prefix('tags')->name('tags.')->group(function () {
             Route::get('/', 'API\TagController@getTags')->name('getTags');
-            Route::post('/new', 'API\TagController@newTag')->name('new');
+            Route::post('/', 'API\TagController@newTag')->name('store');
         });
 
         Route::get('sync', 'API\SyncController@syncData')->name('sync');
