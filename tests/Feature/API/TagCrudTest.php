@@ -172,22 +172,67 @@ class TagCrudTest extends TestCase
 
     public function testUpdateTagValidationFailed()
     {
-        $this->stub();
+        $tag = $this->createTag($this->user);
+
+        $url = $this->createTagRoute('update', $tag->id);
+
+        $response = $this->makeRequest($url, 'PUT', [], $this->user);
+
+        $response->assertJsonValidationErrors([
+            'name'
+        ]);
     }
 
     public function testUpdateTagNotFound()
     {
-        $this->stub();
+        $url = $this->createTagRoute('update', 9999);
+
+        $response = $this->makeRequest($url, 'PUT', [], $this->user);
+
+        $response->assertNotFound();
     }
 
     public function testUpdateTagNotOwnedByUser()
     {
-        $this->stub();
+        $otherUser = $this->createUser();
+
+        $tag = $this->createTag($otherUser);
+
+        $url = $this->createTagRoute('update', $tag->id);
+
+        $response = $this->makeRequest($url, 'PUT', ['name' => 'New Name'], $this->user);
+
+        $response->assertForbidden();
     }
 
     public function testUpdateTagSuccess()
     {
-        $this->stub();
+        $tag = $this->createTag($this->user, [
+            'name' => 'Tag Name'
+        ]);
+
+        $url = $this->createTagRoute('update', $tag->id);
+
+        $params = [
+            'name' => 'New Name'
+        ];
+
+        $response = $this->makeRequest($url, 'PUT', $params, $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('id', $data);
+
+        $this->assertEquals($tag->id, $data['id']);
+
+        /** @var Tag $refreshedTag */
+        $refreshedTag = Tag::findOrFail($tag->id);
+
+        $this->assertEquals($refreshedTag->name, $params['name']);
     }
 
     public function testDeleteTagNotOwnedByUser()
@@ -217,11 +262,12 @@ class TagCrudTest extends TestCase
      * @see createTags()
      *
      * @param User $user
+     * @param array $attributes - the list of overridden attributes.
      * @return Tag
      */
-    private function createTag(User $user): Tag
+    private function createTag(User $user, array $attributes = []): Tag
     {
-        return $this->createTags($user, 1)
+        return $this->createTags($user, 1, $attributes)
             ->first();
     }
 
@@ -230,12 +276,13 @@ class TagCrudTest extends TestCase
      *
      * @param User $user - the user to associate the tags with.
      * @param int $number - the number of tags to generate. Default is 3.
+     * @param array $attributes - the list of overridden attributes.
      * @return Collection - returns a collection of tags.
      */
-    private function createTags(User $user, $number = 3): Collection
+    private function createTags(User $user, $number = 3, array $attributes = []): Collection
     {
         return factory(Tag::class, $number)
-            ->make()
+            ->make($attributes)
             ->each(function (Tag $tag) use ($user) {
                 $tag->user()->associate($user);
                 $tag->save();
