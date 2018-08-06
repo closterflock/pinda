@@ -123,6 +123,56 @@ class TagCrudTest extends TestCase
         $this->assertEquals($tag->name, $tag->name);
     }
 
+    public function testGetTagNotOwnedByUser()
+    {
+        $this->stub();
+    }
+
+    public function testGetTagNotFound()
+    {
+        $this->stub();
+    }
+
+    public function testGetTagSuccess()
+    {
+        $this->stub();
+    }
+
+    public function testUpdateTagValidationFailed()
+    {
+        $this->stub();
+    }
+
+    public function testUpdateTagNotFound()
+    {
+        $this->stub();
+    }
+
+    public function testUpdateTagNotOwnedByUser()
+    {
+        $this->stub();
+    }
+
+    public function testUpdateTagSuccess()
+    {
+        $this->stub();
+    }
+
+    public function testDeleteTagNotOwnedByUser()
+    {
+        $this->stub();
+    }
+
+    public function testDeleteTagNotFound()
+    {
+        $this->stub();
+    }
+
+    public function testDeleteTagSuccess()
+    {
+        $this->stub();
+    }
+
     /**
      * Generates a single tag and returns it.
      * @see createTags()
