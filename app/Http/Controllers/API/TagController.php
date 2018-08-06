@@ -59,4 +59,22 @@ class TagController extends APIController
             'tag' => $tag
         ]);
     }
+
+    /**
+     * Updates a tag.
+     *
+     * @method PUT
+     * @route /api/v1/tags/{tag}
+     * @param TagRequest $request
+     * @param Tag $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function updateTag(TagRequest $request, Tag $tag)
+    {
+        $tag->name = $request->name;
+
+        $tag->save();
+
+        return $this->idBackSuccess($tag->id);
+    }
 }
