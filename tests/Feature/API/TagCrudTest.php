@@ -125,17 +125,49 @@ class TagCrudTest extends TestCase
 
     public function testGetTagNotOwnedByUser()
     {
-        $this->stub();
+        $otherUser = $this->createUser();
+        $tag = $this->createTag($otherUser);
+
+        $tagId = $tag->id;
+        $url = $this->createTagRoute('getTag', $tagId);
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+
+        $response->assertForbidden();
     }
 
     public function testGetTagNotFound()
     {
-        $this->stub();
+        $url = $this->createTagRoute('getTag', 9999);
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+        $response->assertNotFound();
     }
 
     public function testGetTagSuccess()
     {
-        $this->stub();
+        $tag = $this->createTag($this->user);
+
+        $tagId = $tag->id;
+
+        $url = $this->createTagRoute('getTag', $tagId);
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('tag', $data);
+        $tagResponse = $data['tag'];
+        $this->assertNotNull($tagResponse);
+        $this->assertArrayHasKey('user_id', $tagResponse);
+        $this->assertArrayHasKey('id', $tagResponse);
+
+        $this->assertEquals($tagId, $tagResponse['id']);
+        $this->assertEquals($this->user->id, $tagResponse['user_id']);
     }
 
     public function testUpdateTagValidationFailed()
@@ -171,6 +203,13 @@ class TagCrudTest extends TestCase
     public function testDeleteTagSuccess()
     {
         $this->stub();
+    }
+
+    private function createTagRoute($routePrefix, $tagId): string
+    {
+        return route('api.tags.' . $routePrefix, [
+            'tag' => $tagId
+        ]);
     }
 
     /**
