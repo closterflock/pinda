@@ -255,7 +255,7 @@ class LinkCrudTest extends TestCase
 
     public function testNewLinkValidationFailure()
     {
-        $url = route('api.links.new');
+        $url = route('api.links.store');
 
         $response = $this->makeRequest($url, 'POST', [], $this->user);
 
@@ -266,7 +266,7 @@ class LinkCrudTest extends TestCase
 
     public function testNewLinkSuccess()
     {
-        $url = route('api.links.new');
+        $url = route('api.links.store');
 
         $params = [
             'url' => $this->faker->url,
@@ -297,7 +297,7 @@ class LinkCrudTest extends TestCase
 
     public function testNewLinkUrlAlreadyUsed()
     {
-        $url = route('api.links.new');
+        $url = route('api.links.store');
 
         $linkUrl = 'http://pinda.test';
         $params = [
@@ -314,7 +314,7 @@ class LinkCrudTest extends TestCase
 
     public function testNewLinkUrlNotInUseByUser()
     {
-        $url = route('api.links.new');
+        $url = route('api.links.store');
 
         $otherUser = $this->createUser();
 
