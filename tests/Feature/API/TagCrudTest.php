@@ -237,17 +237,41 @@ class TagCrudTest extends TestCase
 
     public function testDeleteTagNotOwnedByUser()
     {
-        $this->stub();
+        $otherUser = $this->createUser();
+
+        $tag = $this->createTag($otherUser);
+
+        $url = $this->createTagRoute('delete', $tag->id);
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertForbidden();
     }
 
     public function testDeleteTagNotFound()
     {
-        $this->stub();
+        $url = $this->createTagRoute('delete', 9999);
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertNotFound();
     }
 
     public function testDeleteTagSuccess()
     {
-        $this->stub();
+        $tag = $this->createTag($this->user);
+
+        $url = $this->createTagRoute('delete', $tag->id);
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertSuccessful();
+
+        /** @var Tag $deletedTag */
+        $deletedTag = Tag::withTrashed()
+            ->findOrFail($tag->id);
+
+        $this->assertTrue($deletedTag->trashed());
     }
 
     private function createTagRoute($routePrefix, $tagId): string
