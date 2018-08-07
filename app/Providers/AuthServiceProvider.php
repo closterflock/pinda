@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Models\AuthToken;
 use App\Models\Link;
+use App\Models\Tag;
 use App\Policies\LinkPolicy;
+use App\Policies\TagPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laracore\Repository\ModelRepository;
@@ -17,7 +19,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Link::class => LinkPolicy::class
+        Link::class => LinkPolicy::class,
+        Tag::class => TagPolicy::class
     ];
 
     /**

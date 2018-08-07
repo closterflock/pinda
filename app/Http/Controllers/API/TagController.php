@@ -6,6 +6,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\TagRequest;
 use App\Models\Repository\TagRepository;
+use App\Models\Tag;
 use App\Services\TagService;
 use Illuminate\Http\Request;
 
@@ -42,5 +43,45 @@ class TagController extends APIController
         return $this->successResponse('Success', [
             'tags' => $repository->getAllTagsForUser($request->user())
         ]);
+    }
+
+    /**
+     * Retrieves a single tag.
+     *
+     * @method GET
+     * @route /api/v1/tags/{tag}
+     * @param Tag $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function getTag(Tag $tag)
+    {
+        return $this->successResponse('Success', [
+            'tag' => $tag
+        ]);
+    }
+
+    /**
+     * Updates a tag.
+     *
+     * @method PUT
+     * @route /api/v1/tags/{tag}
+     * @param TagRequest $request
+     * @param Tag $tag
+     * @return \Illuminate\Http\Response
+     */
+    public function updateTag(TagRequest $request, Tag $tag)
+    {
+        $tag->name = $request->name;
+
+        $tag->save();
+
+        return $this->idBackSuccess($tag->id);
+    }
+
+    public function deleteTag(Tag $tag)
+    {
+        $tag->delete();
+
+        return $this->successResponse();
     }
 }

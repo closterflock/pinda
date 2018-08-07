@@ -123,16 +123,175 @@ class TagCrudTest extends TestCase
         $this->assertEquals($tag->name, $tag->name);
     }
 
+    public function testGetTagNotOwnedByUser()
+    {
+        $otherUser = $this->createUser();
+        $tag = $this->createTag($otherUser);
+
+        $tagId = $tag->id;
+        $url = $this->createTagRoute('getTag', $tagId);
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+
+        $response->assertForbidden();
+    }
+
+    public function testGetTagNotFound()
+    {
+        $url = $this->createTagRoute('getTag', 9999);
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+        $response->assertNotFound();
+    }
+
+    public function testGetTagSuccess()
+    {
+        $tag = $this->createTag($this->user);
+
+        $tagId = $tag->id;
+
+        $url = $this->createTagRoute('getTag', $tagId);
+
+        $response = $this->makeRequest($url, 'GET', [], $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('tag', $data);
+        $tagResponse = $data['tag'];
+        $this->assertNotNull($tagResponse);
+        $this->assertArrayHasKey('user_id', $tagResponse);
+        $this->assertArrayHasKey('id', $tagResponse);
+
+        $this->assertEquals($tagId, $tagResponse['id']);
+        $this->assertEquals($this->user->id, $tagResponse['user_id']);
+    }
+
+    public function testUpdateTagValidationFailed()
+    {
+        $tag = $this->createTag($this->user);
+
+        $url = $this->createTagRoute('update', $tag->id);
+
+        $response = $this->makeRequest($url, 'PUT', [], $this->user);
+
+        $response->assertJsonValidationErrors([
+            'name'
+        ]);
+    }
+
+    public function testUpdateTagNotFound()
+    {
+        $url = $this->createTagRoute('update', 9999);
+
+        $response = $this->makeRequest($url, 'PUT', [], $this->user);
+
+        $response->assertNotFound();
+    }
+
+    public function testUpdateTagNotOwnedByUser()
+    {
+        $otherUser = $this->createUser();
+
+        $tag = $this->createTag($otherUser);
+
+        $url = $this->createTagRoute('update', $tag->id);
+
+        $response = $this->makeRequest($url, 'PUT', ['name' => 'New Name'], $this->user);
+
+        $response->assertForbidden();
+    }
+
+    public function testUpdateTagSuccess()
+    {
+        $tag = $this->createTag($this->user, [
+            'name' => 'Tag Name'
+        ]);
+
+        $url = $this->createTagRoute('update', $tag->id);
+
+        $params = [
+            'name' => 'New Name'
+        ];
+
+        $response = $this->makeRequest($url, 'PUT', $params, $this->user);
+
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertNotNull($data);
+
+        $this->assertArrayHasKey('id', $data);
+
+        $this->assertEquals($tag->id, $data['id']);
+
+        /** @var Tag $refreshedTag */
+        $refreshedTag = Tag::findOrFail($tag->id);
+
+        $this->assertEquals($refreshedTag->name, $params['name']);
+    }
+
+    public function testDeleteTagNotOwnedByUser()
+    {
+        $otherUser = $this->createUser();
+
+        $tag = $this->createTag($otherUser);
+
+        $url = $this->createTagRoute('delete', $tag->id);
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertForbidden();
+    }
+
+    public function testDeleteTagNotFound()
+    {
+        $url = $this->createTagRoute('delete', 9999);
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertNotFound();
+    }
+
+    public function testDeleteTagSuccess()
+    {
+        $tag = $this->createTag($this->user);
+
+        $url = $this->createTagRoute('delete', $tag->id);
+
+        $response = $this->makeRequest($url, 'DELETE', [], $this->user);
+
+        $response->assertSuccessful();
+
+        /** @var Tag $deletedTag */
+        $deletedTag = Tag::withTrashed()
+            ->findOrFail($tag->id);
+
+        $this->assertTrue($deletedTag->trashed());
+    }
+
+    private function createTagRoute($routePrefix, $tagId): string
+    {
+        return route('api.tags.' . $routePrefix, [
+            'tag' => $tagId
+        ]);
+    }
+
     /**
      * Generates a single tag and returns it.
      * @see createTags()
      *
      * @param User $user
+     * @param array $attributes - the list of overridden attributes.
      * @return Tag
      */
-    private function createTag(User $user): Tag
+    private function createTag(User $user, array $attributes = []): Tag
     {
-        return $this->createTags($user, 1)
+        return $this->createTags($user, 1, $attributes)
             ->first();
     }
 
@@ -141,12 +300,13 @@ class TagCrudTest extends TestCase
      *
      * @param User $user - the user to associate the tags with.
      * @param int $number - the number of tags to generate. Default is 3.
+     * @param array $attributes - the list of overridden attributes.
      * @return Collection - returns a collection of tags.
      */
-    private function createTags(User $user, $number = 3): Collection
+    private function createTags(User $user, $number = 3, array $attributes = []): Collection
     {
         return factory(Tag::class, $number)
-            ->make()
+            ->make($attributes)
             ->each(function (Tag $tag) use ($user) {
                 $tag->user()->associate($user);
                 $tag->save();
