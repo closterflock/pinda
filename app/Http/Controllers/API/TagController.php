@@ -77,4 +77,11 @@ class TagController extends APIController
 
         return $this->idBackSuccess($tag->id);
     }
+
+    public function deleteTag(Tag $tag)
+    {
+        $tag->delete();
+
+        return $this->successResponse();
+    }
 }
