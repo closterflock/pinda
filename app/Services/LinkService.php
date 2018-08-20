@@ -55,6 +55,7 @@ class LinkService
     {
         $factory->setRepository($this->repository);
 
+        /** @var Link $link */
         $link = $factory->make([
             'url' => $url,
             'title' => $title,
