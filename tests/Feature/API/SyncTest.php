@@ -21,21 +21,38 @@ class SyncTest extends TestCase
     use WithFaker;
     use WithoutMiddleware;
 
+    /**
+     * @var User
+     */
+    private $user;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->user = factory(User::class)->create();
+    }
+
+    public function testSyncNoUser()
+    {
+        $response = $this->sync();
+
+        $response->assertForbidden();
+    }
+
     public function testSyncInvalidTimestamp()
     {
-        $response = $this->sync('asdf');
+        $response = $this->syncWithUser('asdf');
 
         $response->assertStatus(422);
         $response->assertJsonValidationErrors([
             'timestamp'
         ]);
     }
-    
+
     public function testSyncNoTimestamp()
     {
-        /** @var User $user */
-        $user = factory(User::class)
-            ->create();
+        $user = $this->user;
 
         /** @var Collection $tags */
         $tags = factory(Tag::class, 5)
@@ -56,18 +73,17 @@ class SyncTest extends TestCase
                 $link->tags()->save($randomTag);
             });
 
-        $response = $this->sync(null, $user);
+        $response = $this->syncWithUser();
 
         $response->assertSuccessful();
 
         $data = $response->json('data');
 
-        $this->assertNotNull($data);
-        $this->assertArrayHasKey('links', $data);
-        $this->assertArrayHasKey('tags', $data);
-        $this->assertArrayHasKey('link_tags', $data);
-        $this->assertArrayHasKey('deleted_links', $data);
-        $this->assertArrayHasKey('deleted_tags', $data);
+        $this->assertSyncData($data, [
+            'links',
+            'tags',
+            'link_tags'
+        ]);
 
         $this->assertCount(5, $data['links']);
         $this->assertCount(5, $data['tags']);
@@ -76,9 +92,7 @@ class SyncTest extends TestCase
 
     public function testSyncDeletedLinks()
     {
-        /** @var User $user */
-        $user = factory(User::class)
-            ->create();
+        $user = $this->user;
 
         factory(Link::class, 5)
             ->states('previous')
@@ -103,13 +117,56 @@ class SyncTest extends TestCase
 
         $response->assertSuccessful();
         $data = $response->json('data');
-        $this->assertNotNull($data);
 
-        $this->assertArrayHasKey('deleted_links', $data);
+        $this->assertSyncData($data, [
+            'deleted_links'
+        ]);
+
         $deletedLinks = $data['deleted_links'];
-        $this->assertNotNull($deletedLinks);
         $this->assertCount(1, $deletedLinks);
         $this->assertEquals($linkId, $deletedLinks[0]['id']);
+    }
+
+    public function testSyncDeletedTag()
+    {
+        $user = $this->user;
+
+        $tag = factory(Tag::class)
+            ->make();
+        $tag->user()->associate($user);
+        $tag->save();
+
+        /** @var Link $link */
+        $link = factory(Link::class)
+            ->states('previous')
+            ->make();
+        $link->user()->associate($user);
+        $link->save();
+        $link->tags()->save($tag);
+
+        $timestamp = Carbon::now()->subMinute();
+
+        $tag->delete();
+
+        $response = $this->sync(urlencode($timestamp->toDateTimeString()), $user);
+        $response->assertSuccessful();
+
+        $data = $response->json('data');
+
+        $this->assertSyncData($data, [
+            'deleted_tags'
+        ]);
+
+        $this->assertCount(1, $data['deleted_tags']);
+
+        $responseTag = $data['deleted_tags'][0];
+
+        $this->assertEquals($tag->id, $responseTag['id']);
+    }
+
+    private function syncWithUser($timestampString = null)
+    {
+        return $this->sync($timestampString, $this->user);
     }
 
     private function sync($timestampString = null, User $user = null): TestResponse
@@ -126,5 +183,31 @@ class SyncTest extends TestCase
 
         return $this->actingAs($user)
             ->getJson($url);
+    }
+
+    private function assertSyncData($data, array $nonEmptyKeys = [])
+    {
+        $this->assertNotNull($data);
+
+        $allKeys = [
+            'links',
+            'tags',
+            'link_tags',
+            'deleted_links',
+            'deleted_tags'
+        ];
+
+        foreach ($allKeys as $allKey) {
+            $this->assertArrayHasKey($allKey, $data);
+        }
+        $emptyKeys = array_diff($allKeys, $nonEmptyKeys);
+
+        foreach ($emptyKeys as $emptyKey) {
+            $this->assertEmpty($data[$emptyKey]);
+        }
+
+        foreach ($nonEmptyKeys as $nonEmptyKey) {
+            $this->assertNotEmpty($data[$nonEmptyKey]);
+        }
     }
 }

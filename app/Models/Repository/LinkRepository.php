@@ -13,6 +13,7 @@ use App\Models\Link;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Database\Query\Builder;
 use Laracore\Repository\ModelRepository;
@@ -109,6 +110,7 @@ class LinkRepository extends ModelRepository
         return $this->query()
             ->withTrashed()
             ->where('updated_at', '>', $timestamp)
+            ->orWhere('deleted_at', '>', $timestamp)
             ->get();
     }
 
@@ -122,6 +124,15 @@ class LinkRepository extends ModelRepository
     public function getAllLinkTags(Collection $links, Collection $tags): SupportCollection
     {
         return \DB::table('link_tag')
+            ->select('link_tag.*')
+            ->join('links', function (JoinClause $join) {
+                $join->on('link_tag.link_id', '=', 'links.id')
+                    ->whereNull('links.deleted_at');
+            })
+            ->join('tags', function (JoinClause $join) {
+                $join->on('link_tag.tag_id', '=', 'tags.id')
+                    ->whereNull('tags.deleted_at');
+            })
             ->whereIn('link_id', $links->pluck('id'))
             ->orWhereIn('tag_id', $tags->pluck('id'))
             ->get();

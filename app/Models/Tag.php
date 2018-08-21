@@ -17,8 +17,6 @@ class Tag extends AbstractModel
 
     public $fillable = ['name'];
 
-    public $timestamps = false;
-
     protected $casts = [
         'user_id' => 'int'
     ];

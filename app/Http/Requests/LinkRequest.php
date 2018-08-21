@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
  * @property string title
  * @property string description
  * @property array tags
+ * @property integer link
  */
 class LinkRequest extends FormRequest
 {
@@ -37,6 +38,7 @@ class LinkRequest extends FormRequest
         ];
         if ($this->user() !== null) {
             $urlRules[] = Rule::unique('links')
+                ->ignore($this->link)
                 ->where('user_id', $this->user()->id);
         }
 
