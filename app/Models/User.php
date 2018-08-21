@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * @property integer id
  * @property string name
  * @property string email
  */
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
@@ -50,5 +51,21 @@ class User extends Authenticatable
     public function setAuthToken(AuthToken $token)
     {
         $this->currentAuth = $token;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
