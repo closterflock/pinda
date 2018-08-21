@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Foundation\Testing\WithFaker;
+use JWTAuth;
 use Laracore\Repository\ModelRepository;
 use Tests\TestCase;
 
@@ -67,19 +68,6 @@ class LoginTest extends TestCase
 
         $this->assertNotNull($data);
         $this->assertArrayHasKey('token', $data);
-
-        $token = $data['token'];
-
-        $repository = app(ModelRepository::class);
-        $repository->setModel(User::class);
-
-        /** @var User $user */
-        $user = $repository->query()
-            ->join('auth_tokens', 'users.id', '=', 'auth_tokens.user_id')
-            ->where('token', '=', $token)
-            ->firstOrFail();
-
-        $this->assertEquals(static::SUCCESS_EMAIL, $user->email);
     }
 
     public function testLogoutNoToken()
@@ -99,33 +87,15 @@ class LoginTest extends TestCase
             ->where('email', '=', static::SUCCESS_EMAIL)
             ->firstOrFail();
 
-        //TODO create token factory
-        $token = new AuthToken();
-        $token->ip = $this->faker->ipv4;
-        $token->user_agent = $this->faker->userAgent;
-        $token->token = '12345';
-        $token->user()->associate($user);
-        $token->save();
+        $token = JWTAuth::fromUser($user);
 
-        //Ensure we can retrieve this user with token from the DB
-        $repository->query()
-            ->join('auth_tokens', 'users.id', '=', 'auth_tokens.user_id')
-            ->where('token', '=', $token->token)
-            ->whereNull('auth_tokens.deleted_at')
-            ->where('users.id', '=', $user->id)
-            ->firstOrFail();
+        $response = $this->logout($token);
 
-        $response = $this->logout($token->token);
         $response->assertSuccessful();
 
-        $shouldBeNull = $repository->query()
-            ->join('auth_tokens', 'users.id', '=', 'auth_tokens.user_id')
-            ->where('token', '=', $token->token)
-            ->whereNull('auth_tokens.deleted_at')
-            ->where('users.id', '=', $user->id)
-            ->first();
+        $shouldFail= $this->logout($token);
 
-        $this->assertNull($shouldBeNull);
+        $shouldFail->assertStatus(401);
     }
 
     private function getSuccessCredentials(array $overrides = []): array
@@ -143,7 +113,7 @@ class LoginTest extends TestCase
 
     private function logout(string $token = null): TestResponse
     {
-        $headers = !is_null($token) ? ['X-Auth-Token' => $token] : [];
+        $headers = !is_null($token) ? ['Authorization' => 'Bearer ' . $token] : [];
 
         return $this->deleteJson(route('api.logout'), [], $headers);
     }

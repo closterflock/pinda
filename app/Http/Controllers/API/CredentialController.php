@@ -11,6 +11,7 @@ use App\Services\UserAndTokenRegistrar;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTGuard;
 
 class CredentialController extends APIController
 {
@@ -42,37 +43,35 @@ class CredentialController extends APIController
      * @method POST
      * @param Request $request
      * @param AuthManager $auth
-     * @param AuthTokenRepository $repository
      * @return \App\Models\AuthToken|\Illuminate\Http\Response
      */
-    public function login(Request $request, AuthManager $auth, AuthTokenRepository $repository)
+    public function login(Request $request, AuthManager $auth)
     {
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required'
         ]);
 
-        if (!$auth->guard()->once(['email' => $request->email, 'password' => $request->password])) {
+        /** @var JWTGuard $guard */
+        $guard = $auth->guard('api');
+
+        if (!$token = $guard->attempt(['email' => $request->email, 'password' => $request->password])) {
             return $this->errorResponse('Error', ['Email or password is incorrect.'], 401);
         }
 
         return $this->successResponse(
             'Success',
-            $repository->firstOrCreateForUser(
-                new AuthTokenFactory(),
-                $request->user(),
-                $request->ip(),
-                $request->header('User-Agent')
-            )
+            [
+                'token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => $guard->factory()->getTTL() * 60
+            ]
         );
     }
 
-    public function logout(Request $request, AuthTokenRepository $repository)
+    public function logout(AuthManager $auth)
     {
-        /** @var User $user */
-        $user = $request->user();
-
-        $repository->deleteAuthToken($user->getAuthToken());
+        $auth->guard('api')->logout();
 
         return $this->successResponse();
     }
