@@ -164,6 +164,38 @@ class SyncTest extends TestCase
         $this->assertEquals($tag->id, $responseTag['id']);
     }
 
+    public function testSyncUsingResponseTimestamp()
+    {
+        $user = $this->user;
+
+        $response = $this->syncWithUser();
+
+        $response->assertSuccessful();
+        $data = $response->json('data');
+
+        $this->assertSyncData($data);
+
+        $timestamp = $data['timestamp'];
+
+        $link = factory(Link::class)
+            ->make();
+        $link->user()->associate($user);
+        $link->save();
+
+        $response = $this->syncWithUser($timestamp);
+
+        $response->assertSuccessful();
+        $data = $response->json('data');
+
+        $this->assertSyncData($data, ['links']);
+
+        $links = $data['links'];
+
+        $this->assertCount(1, $links);
+
+        $this->assertEquals($link->id, $links[0]['id']);
+    }
+
     private function syncWithUser($timestampString = null)
     {
         return $this->sync($timestampString, $this->user);
@@ -194,8 +226,13 @@ class SyncTest extends TestCase
             'tags',
             'link_tags',
             'deleted_links',
-            'deleted_tags'
+            'deleted_tags',
+            'timestamp'
         ];
+
+        if (!in_array('timestamp', $nonEmptyKeys)) {
+            $nonEmptyKeys[] = 'timestamp';
+        }
 
         foreach ($allKeys as $allKey) {
             $this->assertArrayHasKey($allKey, $data);
