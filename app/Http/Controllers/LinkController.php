@@ -13,7 +13,6 @@ use Laracore\Factory\ModelFactory;
 use App\Models\Link;
 use App\Models\Repository\LinkRepository;
 use App\Services\LinkService;
-use App\Services\Validator\LinkValidator;
 use Illuminate\Http\Request;
 
 class LinkController extends Controller
@@ -22,14 +21,9 @@ class LinkController extends Controller
      * @var LinkRepository
      */
     private $repository;
-    /**
-     * @var LinkValidator
-     */
-    private $validator;
 
-    public function __construct(LinkRepository $repository, LinkValidator $validator)
+    public function __construct(LinkRepository $repository)
     {
-        $this->validator = $validator;
         $this->repository = $repository;
     }
 
@@ -72,12 +66,6 @@ class LinkController extends Controller
      */
     public function updateLink(Link $link, Request $request, LinkService $service)
     {
-        $this->validator->validate($this, $request);
-
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return redirect('/');
-        }
-
         $service->saveLink($link, $request->url, $request->title, $request->description);
 
         return redirect('/');
@@ -95,10 +83,6 @@ class LinkController extends Controller
      */
     public function deleteLink(Link $link, Request $request)
     {
-        if (!$this->validator->linkBelongsToUser($request->user(), $link)) {
-            return redirect('/');
-        }
-
         $link->delete();
 
         return redirect('/');
@@ -115,12 +99,6 @@ class LinkController extends Controller
      */
     public function newLink(Request $request, LinkService $service)
     {
-        $this->validator->validate($this, $request);
-
-        if ($this->validator->linkAlreadyExists(new LinkRepository(), $request->user(), $request->url)) {
-            return redirect('/');
-        }
-
         $service->newLink(
             new ModelFactory(),
             $request->user(),
