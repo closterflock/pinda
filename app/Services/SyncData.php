@@ -5,6 +5,7 @@ namespace App\Services;
 
 
 
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
@@ -31,14 +32,19 @@ class SyncData implements Arrayable, Jsonable, \JsonSerializable
      * @var Collection
      */
     private $deletedTags;
+    /**
+     * @var Carbon
+     */
+    private $timestamp;
 
-    public function __construct(Collection $links = null, Collection $tags = null, Collection $linkTags = null, Collection $deletedLinks = null, Collection $deletedTags = null)
+    public function __construct()
     {
-        $this->links = $links ?? collect();
-        $this->tags = $tags ?? collect();
-        $this->linkTags = $linkTags ?? collect();
-        $this->deletedLinks = $deletedLinks ?? collect();
-        $this->deletedTags = $deletedTags ?? collect();
+        $this->updateTimestamp();
+        $this->links = collect();
+        $this->tags = collect();
+        $this->linkTags = collect();
+        $this->deletedLinks = collect();
+        $this->deletedTags = collect();
     }
 
     /**
@@ -91,6 +97,10 @@ class SyncData implements Arrayable, Jsonable, \JsonSerializable
         return $this;
     }
 
+    public function updateTimestamp() {
+        $this->timestamp = Carbon::now()->subMinute();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -101,7 +111,8 @@ class SyncData implements Arrayable, Jsonable, \JsonSerializable
             'tags' => $this->tags,
             'link_tags' => $this->linkTags,
             'deleted_links' => $this->deletedLinks,
-            'deleted_tags' => $this->deletedTags
+            'deleted_tags' => $this->deletedTags,
+            'timestamp' => $this->timestamp->toIso8601ZuluString()
         ];
     }
 
