@@ -47,6 +47,7 @@ class AuthServiceProvider extends ServiceProvider
             /** @var AuthToken $authToken */
             $authToken = $repository
                 ->with('user')
+                ->select('auth_tokens.*')
                 ->join('users', 'auth_tokens.user_id', '=', 'users.id')
                 ->where('token', '=', $apiToken)
                 ->first();
